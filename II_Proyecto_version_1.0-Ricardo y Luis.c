@@ -1,0 +1,1608 @@
+//Librerias usadas
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+//------------------------------------STRUCT NIÑOS-----------------------------------
+typedef struct nino
+{
+	char nombre[30], cedula[30], correo[30], necs[100], residencia[30];
+	int dia, mes, anio, edad;
+	struct nino* sig_Nino;
+} nino;
+
+//Variables generales de primer y ultimo miembro
+nino* primer_Nino=NULL;
+nino* ultimo_Nino=NULL;
+
+
+int nuevoNino(char *cedula, char  *nombre, char *correo,char *necesidades, int dia, int mes, int anio, int edad) //Funcion para insertar
+{ 
+	nino *nuevo=(nino*) malloc(sizeof(nino));
+	
+	strcpy(nuevo->nombre, nombre);
+	strcpy(nuevo->cedula, cedula);
+    strcpy(nuevo->correo, correo);
+    strcpy(nuevo->necs, necesidades);
+    nuevo->dia=dia;
+    nuevo->mes=mes;
+    nuevo->anio=anio;  
+	nuevo->edad=edad;  
+
+
+	if(primer_Nino==NULL)	
+	{
+		primer_Nino=nuevo;
+		primer_Nino->sig_Nino=NULL;
+		ultimo_Nino=nuevo;
+	}
+	ultimo_Nino->sig_Nino=nuevo;
+	nuevo->sig_Nino=NULL;
+	ultimo_Nino=nuevo;
+}
+
+
+
+
+void mostrar_Ninos()//Imprime 
+{
+	nino* actual = (nino*) malloc(sizeof(nino)); // crea nodos 
+	actual = primer_Nino;
+	
+	if(primer_Nino != NULL)
+	{
+		while(actual != NULL)
+		{
+		
+			printf("\t\n    ----Informacion del Nino(a)----\n");
+			printf("\n   -Nombre completo: %s\n   -Cedula: %s\n   -Correo electronico: %s\n   -Necesidades especiales: %s\n   -Residencia: %s\n   -Edad: %i\n   -Fecha de nacimiento: %i/%i/%i\n", actual->nombre, actual->cedula, actual->correo, actual->necs, actual->residencia, actual->edad, actual->dia, actual->mes, actual->anio);
+			actual = actual->sig_Nino;// siguiente puntero en lista
+		}
+	}
+	else
+	{
+		printf("\nUps! Parece que no hay ninos registrados\n\n");
+	}
+}
+//**************************************************************************************************************************************************************************************************************
+
+int modificar_Nino() 
+{
+	char id[12], nombre[30], elecc[3]="Si";
+	int dato=-1, encontrado;
+	
+	nino* actual = (nino*) malloc(sizeof(nino)); // crea nodos 
+	actual = primer_Nino;
+	
+	printf("Digite la identificacion del nino(a) del cual desea modificar sus datos (X-XXXX-XXXX): "); 
+	fflush(stdin);
+	scanf("%[^\n]", &id);
+	while (strlen(id)!=11) //Comparar la cantidad de caracteres
+	{
+		printf("Digite nuevamente el id del nino(a), con el formato solicitado (X-XXXX-XXXX): ");
+		fflush(stdin);
+		scanf("%[^\n]", &id);
+	}
+	
+	if(primer_Nino!=NULL)
+	{
+		while(actual!=NULL && encontrado!=1)
+		{
+			if (strcmp(actual->cedula, id)==0)
+			{
+				printf("\t\n    ----Informacion del Nino(a)----\n");
+				printf("\n   1-Nombre completo: %s\n   2-Cedula: %s\n   3-Correo electronico: %s\n   4-Necesidades especiales: %s\n   5-Residencia: %s\n   6-Edad: %i\n   7-Fecha de nacimiento: %i/%i/%i\n", actual->nombre, actual->cedula, actual->correo, actual->necs, actual->residencia, actual->edad, actual->dia, actual->mes, actual->anio);
+				encontrado=1;
+			}
+			else
+			{
+				actual=actual->sig_Nino;// siguiente puntero en lista	
+			}	
+		}
+	}
+	else
+	{
+		printf("\nUps! Parece que el nino(a) que busca no esta registrado\n\n");
+	}
+	
+	while (strcmp(elecc,"Si")==0 || strcmp(elecc,"si")==0)
+	{
+		while(dato<1 || dato>7) 
+        {
+            printf("\nDigite el numero correspondiente al dato que desea modificar: ");
+           fflush(stdin);
+            scanf("%i", &dato);
+        }
+		
+		if (dato==1)
+		{
+			printf("Digite el nombre completo del nino(a): ");
+			fflush(stdin); //limpia buffer de espacios y saltos
+			scanf("%[^\n]",&actual->nombre);
+		}
+		else if (dato==2)
+		{
+			printf("Digite el numero de identificacion del nino(a) (formato X-XXXX-XXXX): ");
+			fflush(stdin);
+			scanf("%[^\n]", &actual->cedula);
+			while (strlen(actual->cedula)!=11) //Comparar la cantidad de caracteres
+			{
+				printf("Digite nuevamente el id del nino(a), con el formato solicitado (X-XXXX-XXXX): ");
+				fflush(stdin);
+				scanf("%[^\n]", &actual->cedula);
+			}
+		}
+		else if (dato==3)
+		{
+			printf("Digite el nuevo correo electronico: ");
+			scanf("%s",&actual->correo);
+		}
+		else if (dato==4)
+		{
+			printf("Digite las necesidades particulares del nino(a), en caso de que este las posea, de no ser asi digite 'No posee': ");
+			fflush(stdin);
+			scanf("%[^\n]", &actual->necs);
+		}
+		else if (dato==5)
+		{
+			printf("Digite la residencia del nino(a): **HAY QUE VALIDAR**");
+			fflush(stdin);
+			scanf("%[^\n]", &actual->residencia);
+		}
+		else if (dato==6)//****************************************************************
+		{
+			actual->edad=-1;
+			while(actual->edad < 0 || actual->edad > 99)
+	        {
+	            printf("Digite la edad del nino(a): ");
+	            fflush(stdin);
+	            scanf("%i", &actual->edad);
+	        }
+		}
+		else if (dato==7)
+		{
+			int diaActual, mesActual, anioActual, edad;
+			char  diaSTR[3], mesSTR[3], anioSTR[5]; 
+			
+			time_t tiempo = time(0);
+			struct tm *tlocal = localtime(&tiempo);
+		
+			strftime(mesSTR,3,"%m",tlocal);
+			strftime(anioSTR,5,"%Y",tlocal);
+			strftime(diaSTR,3,"%d",tlocal);
+		
+			diaActual=atoi(diaSTR);
+			mesActual=atoi(mesSTR);
+			anioActual=atoi(anioSTR);
+			
+			printf("Digite el ANIO de nacimiento del nino(a): "); 
+			while(scanf("%i", &actual->anio)!=1) 
+            {
+            	printf(">>Digite nuevamente el ANIO de nacimiento del nino(a): ");
+                fflush(stdin);
+            }
+			while (actual->anio>anioActual || actual->anio<1000) 
+			{
+				printf(">>Digite nuevamente el ANIO del nacimiento del nino(a): ");
+				scanf("%i", &actual->anio);
+			}
+			if (actual->anio==anioActual)
+			{
+				printf("Digite el MES de nacimiento del nino(a): "); 
+				while(scanf("%i", &actual->mes)!=1) 
+	            {
+	            	printf(">>Digite nuevamente el MES de nacimiento del nino(a): ");
+	                fflush(stdin);
+	            }
+				while (actual->mes>mesActual || actual->mes<1)//Se valida que no sea un mes mayor a Enero
+				{
+					printf(">>Digite nuevamente el MES del nacimiento del nino(a): ");
+					scanf("%i", &actual->mes);
+				}
+				
+				printf("Digite el DIA de nacimiento del nino(a): "); 
+				while(scanf("%i", &actual->dia)!=1) 
+	            {
+	            	printf(">>Digite nuevamente el DIA de nacimiento del nino(a): ");
+	                fflush(stdin);
+	            }
+				while (actual->dia>diaActual || actual->dia<1)
+				{
+					printf(">>Digite nuevamente el DIA del nacimiento del nino(a): ");
+					scanf("%i", &actual->dia);
+				}
+			}
+			else
+			{
+				printf("Digite el MES de nacimiento del nino(a): "); 
+				while(scanf("%i", &actual->mes)!=1) 
+	            {
+	            	printf(">>Digite nuevamente el MES de nacimiento del nino(a): ");
+	                fflush(stdin);
+	            }
+				while (actual->mes>12 || actual->mes<1)
+				{
+					printf(">>Digite nuevamente el MES del nacimiento del nino(a): ");
+					scanf("%i", &actual->mes);
+				}
+				
+				printf("Digite el DIA de nacimiento del nino(a): "); 
+				while(scanf("%i", &actual->dia)!=1) 
+	            {
+	            	printf(">>Digite nuevamente el DIA de nacimiento del nino(a): ");
+	                fflush(stdin);
+	            }
+				while (actual->dia>31 || actual->dia<1)
+				{
+					printf(">>Digite nuevamente el DIA del nacimiento del nino(a): ");
+					scanf("%i", &actual->dia);
+				}
+			}
+		}
+		printf("\nSi desea modificar otro dato, digite 'Si', digite 'No' en caso contrario: ");
+		scanf("%s",&elecc);
+		dato=0;
+	}
+	return 0;
+}
+//**************************************************************************************************************************************************************************************************************
+
+
+void eliminarNino(char *id_nino)
+{
+	nino* actual=(nino*) malloc(sizeof(nino));
+	actual=primer_Nino;
+	nino* anterior=(nino*) malloc(sizeof(nino));
+	anterior=NULL;
+	int encontrado=0;
+	
+	if(primer_Nino!=NULL)
+	{
+		while(actual!=NULL && encontrado!=1)
+		{
+			
+			if(strcmp(actual->cedula,id_nino)==0)
+			{
+	
+				if(actual==primer_Nino)
+				{
+					primer_Nino=primer_Nino->sig_Nino;
+				}
+				else if(actual==ultimo_Nino)
+				{
+					anterior->sig_Nino=NULL;
+					ultimo_Nino=anterior;
+				}
+				else
+				{
+					anterior->sig_Nino=actual->sig_Nino;
+				}
+				
+				printf("\nNino eliminado con exito");
+				encontrado=1;
+			}
+			anterior=actual;
+			actual=actual->sig_Nino;
+		}
+		if(encontrado==0)
+		{
+			printf("\nEl nino(a) no fue encontrado\n\n");
+		}
+		else
+		{
+			free(anterior);
+		}
+	}
+	else
+	{
+		printf("\nLa lista se encuentra vacia\n\n");
+	}
+}
+
+int Ninos()
+{
+	int opc, verificar, dia, mes, anio, diaActual, mesActual, anioActual, edad;
+	char  nombre[30], correo[30], cedula[30], temp_cedula[30], neces[100], id_nino[12], diaSTR[3], mesSTR[3], anioSTR[5]; 
+
+	time_t tiempo = time(0);
+	struct tm *tlocal = localtime(&tiempo);
+
+	strftime(mesSTR,3,"%m",tlocal);
+	strftime(anioSTR,5,"%Y",tlocal);
+	strftime(diaSTR,3,"%d",tlocal);
+
+	diaActual=atoi(diaSTR);
+	mesActual=atoi(mesSTR);
+	anioActual=atoi(anioSTR);
+	
+	while(opc!=5)
+	{
+	    printf("\n        >>NINOS Y NINAS<<         ");
+		printf("\n  1. Agregar nino(a)              ");
+		printf("\n  2. Mostrar ninos(as)            ");
+	    printf("\n  3. Modificar datos de nino(a)   ");
+		printf("\n  4. Eliminar nino(a)             ");
+	    printf("\n  5. Volver al menu principal     ");
+		printf("\n\nDigite el numero de la opcion a revisar:  ");
+		fflush(stdin);   
+	   	if(scanf("%d",&opc)!=1)
+    	{
+			printf("Error en la opcion ingresada \n"); 
+		}
+		else
+		{ 	 
+		
+			if(opc==1)
+			{
+				nino* actual=(nino*) malloc(sizeof(nino));
+				actual=primer_Nino;
+				
+				printf("Ingrese el nombre completo del nino(a): ");
+				fflush(stdin); //limpia buffer de espacios y saltos
+				scanf("%[^\n]",&nombre);
+	
+				
+				printf("Ingrese la cedula del nino(a) (formato X-XXXX-XXXX): ");
+				fflush(stdin);
+				scanf("%[^\n]", &temp_cedula);
+				while (strlen(temp_cedula)!=11) //Comparar la cantidad de caracteres
+				{
+					printf("Digite nuevamente el id del nino(a), con el formato solicitado (X-XXXX-XXXX): ");
+					fflush(stdin);
+					scanf("%[^\n]", &temp_cedula);
+				}
+				
+				while(actual!=NULL)
+				{
+					if (strcmp(actual->cedula , temp_cedula)==0)
+					{ 
+						verificar++;
+					}
+					actual = actual->sig_Nino;
+				}
+				
+				printf("Ingrese la direccion de correo electronico: ");
+				scanf("%s", correo);
+				
+				printf("Ingrese las necesidades particulares del nino(a), en caso de que este las posea, de no ser asi digite 'No posee': ");
+				fflush(stdin);
+				scanf("%[^\n]", &neces);
+				
+				printf(">>Digite el numero que corresponde a lo que se le solicita a continuacion<<\n");
+				printf("Digite el ANIO de nacimiento del nino(a): "); 
+				while(scanf("%i", &anio)!=1) 
+	            {
+	            	printf(">>Digite nuevamente el ANIO del nacimiento del nino(a): ");
+	                fflush(stdin);
+	            }
+	           	while (anio>anioActual || anio<1000) 
+				{
+					printf(">>Digite nuevamente el ANIO del nacimiento del nino(a): ");
+					scanf("%i", &anio);
+				}
+	
+				if (anio==anioActual)
+				{
+					printf("Digite el MES de nacimiento del nino(a): "); 
+					while(scanf("%i", &mes)!=1) 
+		            {
+		            	printf(">>Digite nuevamente el MES de nacimiento del nino(a): ");
+		                fflush(stdin);
+		            }
+					while (mes>mesActual || mes<1) //Se valida que no sea un mes manor a Enero
+					{
+						printf(">>Digite nuevamente el MES del nacimiento del nino(a): ");
+						scanf("%i", &mes);
+					}
+					
+					printf("Digite el DIA de nacimiento del nino(a): "); 
+					while(scanf("%i", &dia)!=1) 
+		            {
+		            	printf(">>Digite nuevamente el DIA de nacimiento del nino(a): ");
+		                fflush(stdin);
+		            }
+					while (dia>diaActual || dia<1)
+					{
+						printf(">>Digite nuevamente el DIA del nacimiento del nino(a): ");
+						scanf("%i", &dia);
+					}
+				}
+				else
+				{
+					printf("Digite el MES de nacimiento del nino(a): "); 
+					while(scanf("%i", &mes)!=1)
+		            {
+		            	printf(">>Digite nuevamente el MES de nacimiento del nino(a): "); 
+		                fflush(stdin);
+		            }
+					while (mes>12 || mes<1)
+					{
+						printf(">>Digite nuevamente el MES del nacimiento del nino(a): ");
+						scanf("%i", &mes);
+					}
+					
+					printf("Digite el DIA de nacimiento del nino(a): "); 
+					while(scanf("%i", &dia)!=1) 
+		            {
+		            	printf(">>Digite nuevamente el DIA de nacimiento del nino(a): ");
+		                fflush(stdin);
+		            }
+					while (dia>31 || dia<1)
+					{
+						printf(">>Digite nuevamente el DIA del nacimiento del nino(a): ");
+						scanf("%i", &dia);
+					}
+				}
+				
+				edad=anioActual-anio-1;
+				if(mes<mesActual)
+				{
+					edad++;
+				}
+				else if(mes==mesActual && dia<=diaActual)
+				{
+					edad++;
+				}
+				                
+				if(verificar==0)
+				{
+					strcpy(cedula, temp_cedula);
+					nuevoNino(cedula, nombre, correo, neces, dia, mes, anio, edad);
+					printf("\n**Muy bien! Se ha logrado registrar al nino(a) con exito!**\n");
+				}
+				else 
+				{
+					printf("\nOh! Parece que ya se ha registrado a este nino(a) anteriormente\n");
+				}
+			}
+			else if(opc==2)
+			{
+				mostrar_Ninos();
+			}
+			else if(opc==3)
+			{
+				modificar_Nino();
+			}
+			else if(opc==4)
+			{
+				printf("Ingrese el numero de identificacion del nino(a) a eliminar (formato X-XXXX-XXXX): ");
+				fflush(stdin);
+				scanf("%[^\n]", &id_nino);
+				while (strlen(id_nino)!=11) //Comparar la cantidad de caracteres
+				{
+					printf("Digite nuevamente el id del nino(a), con el formato solicitado (X-XXXX-XXXX): ");
+					fflush(stdin);
+					scanf("%[^\n]", &id_nino);
+				}
+				eliminarNino(id_nino);
+			}
+		}
+	}
+}	
+
+
+//------------------------------------STRUCT AYUDANTES-----------------------------------
+typedef struct ayudante
+{
+	char nombre[30], cedula[30], puesto[30], funcs[100];
+	int dia, mes, anio;
+	struct ayudante* sig_Ayudante;
+} ayudante;
+
+//Variables generales de primer y ultimo miembro
+ayudante* primer_Ayudante=NULL;
+ayudante* ultimo_Ayudante=NULL;
+
+int nuevoAyudante(char *cedula, char  *nombre, char *puesto,char *funcs, int dia, int mes, int anio) //Funcion para insertar
+{ 
+	ayudante *nuevo=(ayudante*) malloc(sizeof(ayudante));
+	
+	strcpy(nuevo->nombre, nombre);
+	strcpy(nuevo->cedula, cedula);
+    strcpy(nuevo->puesto, puesto);
+    strcpy(nuevo->funcs, funcs);
+    nuevo->dia=dia;
+    nuevo->mes=mes;
+    nuevo->anio=anio;  
+    
+	if(primer_Ayudante==NULL)	
+	{
+		primer_Ayudante=nuevo;
+		primer_Ayudante->sig_Ayudante=NULL;
+		ultimo_Ayudante=nuevo;
+	}
+	ultimo_Ayudante->sig_Ayudante=nuevo;
+	nuevo->sig_Ayudante=NULL;
+	ultimo_Ayudante=nuevo;
+}
+
+
+void mostrar_Ayudantes()//Imprime 
+{
+	ayudante* actual=(ayudante*) malloc(sizeof(ayudante)); // crea nodos 
+	actual=primer_Ayudante;
+	
+	if(primer_Ayudante!=NULL)
+	{
+		while(actual!=NULL)
+		{
+		
+			printf("\t\n    ----Informacion del Ayudante de Santa----\n");
+			printf("\n   -Nombre completo: %s\n   -Cedula: %s\n   -Puesto: %s\n   -Funciones: %s\n   -Fecha de inicio de labores: %i/%i/%i\n", actual->nombre, actual->cedula, actual->puesto, actual->funcs, actual->dia, actual->mes, actual->anio);
+			actual=actual->sig_Ayudante;// siguiente puntero en lista
+		}
+	}
+	else
+	{
+		printf("\nUps! Parece que no hay ayudantes registrados\n\n");
+	}
+}
+
+int modificar_Ayudante() 
+{
+	char id[12], nombre[30], elecc[3]="Si";
+	int dato, encontrado;
+	
+	ayudante* actual=(ayudante*) malloc(sizeof(ayudante)); // crea nodos
+	actual=primer_Ayudante;
+	
+	printf("Digite la identificacion del ayudante del cual desea modificar sus datos (X-XXXX-XXXX): "); 
+	fflush(stdin);
+	scanf("%[^\n]", &id);
+	while (strlen(id)!=11) //Comparar la cantidad de caracteres
+	{
+		printf("Digite nuevamente el id del ayudante, con el formato solicitado (X-XXXX-XXXX): ");
+		fflush(stdin);
+		scanf("%[^\n]", &id);
+	}
+	
+	if(primer_Ayudante!=NULL)
+	{
+		while(actual!=NULL && encontrado!=1)
+		{
+			if (strcmp(actual->cedula, id)==0)
+			{
+				printf("\t\n    ----Informacion del Ayudante de Santa----\n");
+				printf("\n   1-Nombre: %s\n   2-Cedula: %s\n   3-Puesto: %s\n   4-Funciones: %s\n   5-Fecha de inicio de labores: %i/%i/%i\n", actual->nombre, actual->cedula, actual->puesto, actual->funcs, actual->dia, actual->mes, actual->anio);
+				encontrado=1;
+			}
+			else
+			{
+				actual=actual->sig_Ayudante;// siguiente puntero en lista	
+			}
+			
+		}
+	}
+	else
+	{
+		printf("\nUps! Parece que el ayudante que busca no esta registrado\n\n");
+	}
+	
+	while (strcmp(elecc,"Si")==0 || strcmp(elecc,"si")==0)
+	{
+		printf("\nDigite el numero correspondiente al dato que desea modificar: ");
+		scanf("%i",&dato);
+		
+		if (dato==1)
+		{
+			printf("Digite el nombre completo del ayudante: ");
+			fflush(stdin); //limpia buffer de espacios y saltos
+			scanf("%[^\n]",&actual->nombre);
+		}
+		else if (dato==2)
+		{
+			printf("Digite el numero de identificacion del ayudante de santa (formato X-XXXX-XXXX): ");
+			fflush(stdin);
+			scanf("%[^\n]", &actual->cedula);
+			while (strlen(actual->cedula)!=11) //Comparar la cantidad de caracteres
+			{
+				printf("Digite nuevamente el id del ayudante, con el formato solicitado (X-XXXX-XXXX): ");
+				fflush(stdin);
+				scanf("%[^\n]", &actual->cedula);
+			}
+		}
+		else if (dato==3)
+		{
+			printf("Digite el nuevo puesto: ");
+			scanf("%s",&actual->puesto);
+		}
+		else if (dato==4)
+		{
+			printf("Describa las funciones que desempeña: ");
+			fflush(stdin);
+			scanf("%[^\n]", &actual->funcs);
+		}
+		
+		else if (dato==5)
+		{
+			int diaActual, mesActual, anioActual, edad;
+			char  diaSTR[3], mesSTR[3], anioSTR[5]; 
+			
+			time_t tiempo = time(0);
+			struct tm *tlocal = localtime(&tiempo);
+		
+			strftime(mesSTR,3,"%m",tlocal);
+			strftime(anioSTR,5,"%Y",tlocal);
+			strftime(diaSTR,3,"%d",tlocal);
+		
+			diaActual=atoi(diaSTR);
+			mesActual=atoi(mesSTR);
+			anioActual=atoi(anioSTR);
+			
+			printf("Digite el ANIO en el que inicio labores con Santa: "); 
+			while(scanf("%i", &actual->anio)!=1) 
+            {
+            	printf(">>Digite nuevamente el ANIO en el que inicio labores con Santa: ");
+                fflush(stdin);
+            }
+			while (actual->anio>anioActual || actual->anio < 1000) 
+			{
+				printf(">>Digite nuevamente el ANIO en el que inicio labores con Santa: ");
+				scanf("%i", &actual->anio);
+			}
+			if (actual->anio==anioActual)
+			{
+				printf("Digite el MES en el que inicio labores con Santa: ");
+				while(scanf("%i", &actual->mes)!=1) 
+	            {
+	            	printf("Digite nuevamente el MES en el que inicio labores con Santa: ");
+	                fflush(stdin);
+	            }
+				while (actual->mes>mesActual || actual->mes<1)//Se valida que no sea un mes mayor a Enero
+				{
+					printf(">>Digite nuevamente el MES en el que inicio labores con Santa: ");
+					scanf("%i", &actual->mes);
+				}
+				
+				printf("Digite el DIA en el que inicio labores con Santa: ");
+				while(scanf("%i", &actual->dia)!=1)
+	            {
+	            	printf("Digite nuevamente el DIA en el que inicio labores con Santa: ");
+	                fflush(stdin);
+	            }
+				while (actual->dia>diaActual || actual->dia<1)
+				{
+					printf(">>Digite nuevamente el DIA en el que inicio labores con Santa: ");
+					scanf("%i", &actual->dia);
+				}
+			}
+			else
+			{
+				printf("Digite el MES en el que inicio labores con Santa: "); //-------------Validar que sea un numero
+				while(scanf("%i", &actual->mes)!=1) 
+	            {
+	            	printf("Digite nuevamente el MES en el que inicio labores con Santa: ");
+	                fflush(stdin);
+	            }
+				while (actual->mes>12 || actual->mes<1)
+				{
+					printf(">>Digite nuevamente el MES en el que inicio labores con Santa: ");
+					scanf("%i", &actual->mes);
+				}
+				
+				printf("Digite el DIA en el que inicio labores con Santa: "); //-------------Validar que sea un numero
+				while(scanf("%i", &actual->dia)!=1)
+	            {
+	            	printf("Digite nuevamente el DIA en el que inicio labores con Santa: ");
+	                fflush(stdin);
+	            }
+				while (actual->dia>31 || actual->dia<1)
+				{
+					printf(">>Digite nuevamente el DIA en el que inicio labores con Santa: ");
+					scanf("%i", &actual->dia);
+				}
+			}
+		}
+		printf("Si desea modificar otro dato, digite 'Si', digite 'No' en caso contrario: ");
+		scanf("%s",&elecc);
+	}
+	return 0;
+}
+
+
+
+void eliminarAyudante(char *id_ayudante)
+{
+	ayudante* actual=(ayudante*) malloc(sizeof(ayudante));
+	actual=primer_Ayudante;
+	ayudante* anterior=(ayudante*) malloc(sizeof(ayudante));
+	anterior=NULL;
+	int encontrado=0;
+	
+	if(primer_Ayudante!=NULL)
+	{
+		while(actual!=NULL && encontrado!=1)
+		{
+			
+			if(strcmp(actual->cedula,id_ayudante)==0)
+			{
+	
+				if(actual==primer_Ayudante)
+				{
+					primer_Ayudante=primer_Ayudante->sig_Ayudante;
+				}
+				else if(actual==ultimo_Ayudante)
+				{
+					anterior->sig_Ayudante=NULL;
+					ultimo_Ayudante=anterior;
+				}
+				else
+				{
+					anterior->sig_Ayudante=actual->sig_Ayudante;
+				}
+				
+				printf("\nAyudante de Santa eliminado con exito");
+				encontrado=1;
+			}
+			anterior=actual;
+			actual=actual->sig_Ayudante;
+		}
+		if(encontrado==0)
+		{
+			printf("\nEl ayudante no fue encontrado\n\n");
+		}
+		else
+		{
+			free(anterior);
+		}
+	}
+	else
+	{
+		printf("\nLa lista se encuentra vacia\n\n");
+	}
+}
+
+
+int Ayudantes()
+{
+	int opc, verificar, dia, mes, anio, diaActual, mesActual, anioActual;
+	char  nombre[30], puesto[30], cedula[30], temp_cedula[30], funcs[100], id_ayudante[12], diaSTR[3], mesSTR[3], anioSTR[5]; 
+	
+	time_t tiempo = time(0);
+	struct tm *tlocal = localtime(&tiempo);
+
+	strftime(mesSTR,3,"%m",tlocal);
+	strftime(anioSTR,5,"%Y",tlocal);
+	strftime(diaSTR,3,"%d",tlocal);
+
+	diaActual=atoi(diaSTR);
+	mesActual=atoi(mesSTR);
+	anioActual=atoi(anioSTR);
+	
+	while(opc!=5)
+	{
+	    printf("\n       >>AYUDANTES DE SANTA<<     ");
+		printf("\n  1. Agregar ayudante             ");
+		printf("\n  2. Mostrar ayudantes            ");
+	    printf("\n  3. Modificar datos de ayudante  ");
+		printf("\n  4. Eliminar ayudante             ");
+	    printf("\n  5. Volver al menu principal     ");
+		printf("\n\nDigite el numero de la opcion a revisar:  ");
+	 	fflush(stdin);   
+	   	if(scanf("%d",&opc)!=1)
+    	{
+			printf("Error en la opcion ingresada \n"); 
+		}
+		else
+		{    
+		
+			if(opc==1)
+			{
+				ayudante* actual=(ayudante*) malloc(sizeof(ayudante));
+				actual=primer_Ayudante;
+				
+				printf("Ingrese el nombre completo del ayudante: ");
+				fflush(stdin); //limpia buffer de espacios y saltos
+				scanf("%[^\n]",&nombre);
+	
+				
+				printf("Ingrese el numero de identificacion (formato X-XXXX-XXXX): ");
+				fflush(stdin);
+				scanf("%[^\n]", &temp_cedula);
+				while (strlen(temp_cedula)!=11) //Comparar la cantidad de caracteres
+				{
+					printf("Digite nuevamente el id, siguiendo el formato solicitado (X-XXXX-XXXX): ");
+					fflush(stdin);
+					scanf("%[^\n]", &temp_cedula);
+				}
+				
+				while(actual!=NULL)
+				{
+					if (strcmp(actual->cedula , temp_cedula)==0)
+					{ 
+						verificar++;
+					}
+					actual=actual->sig_Ayudante;
+				}
+				
+				printf("Puesto: ");
+				fflush(stdin);
+				scanf("%[^\n]", &puesto);
+				
+				printf("Funciones que desempenia: ");
+				fflush(stdin);
+				scanf("%[^\n]", &funcs);
+				
+				printf(">>Digite el numero que corresponde a lo que se le solicita a continuacion<<\n");
+				printf("Digite el ANIO en el que inicio labores con Santa: "); 
+				while(scanf("%i", &anio)!=1)
+	            {
+	            	printf("Digite nuevamente el DIA en el que inicio labores con Santa: ");
+	                fflush(stdin);
+	            }
+				while (anio>anioActual || anio<1000) 
+				{
+					printf(">>Digite nuevamente el ANIO en el que inicio labores con Santa: ");
+					scanf("%i", &anio);
+				}
+				if (anio==anioActual)
+				{
+					printf("Digite el MES en el que inicio labores con Santa: "); 
+					while(scanf("%i", &mes)!=1)
+		            {
+		            	printf("Digite nuevamente el MES en el que inicio labores con Santa: ");
+		                fflush(stdin);
+		            }
+					while (mes>mesActual || mes<1)//Se valida que no sea un mes mayor a Enero
+					{
+						printf(">>Digite nuevamente el MES en el que inicio labores con Santa: ");
+						scanf("%i", &mes);
+					}
+					
+					printf("Digite el DIA en el que inicio labores con Santa: "); 
+					while(scanf("%i", &dia)!=1)
+		            {
+		            	printf("Digite nuevamente el DIA en el que inicio labores con Santa: ");
+		                fflush(stdin);
+		            }
+					while (dia>diaActual || dia<1)
+					{
+						printf(">>Digite nuevamente el DIA en el que inicio labores con Santa: ");
+						scanf("%i", &dia);
+					}
+				}
+				else
+				{
+					printf("Digite el MES en el que inicio labores con Santa: "); //-------------Validar que sea un numero
+					while(scanf("%i", &mes)!=1)
+		            {
+		            	printf("Digite nuevamente el MES en el que inicio labores con Santa: ");
+		                fflush(stdin);
+		            }
+					while (mes>12 || mes<1)
+					{
+						printf(">>Digite nuevamente el MES en el que inicio labores con Santa: ");
+						scanf("%i", &mes);
+					}
+					
+					printf("Digite el DIA en el que inicio labores con Santa: "); //-------------Validar que sea un numero
+					while(scanf("%i", &dia)!=1)
+		            {
+		            	printf("Digite nuevamente el DIA en el que inicio labores con Santa: ");
+		                fflush(stdin);
+		            }
+					while (dia>31 || dia<1)
+					{
+						printf(">>Digite nuevamente el DIA en el que inicio labores con Santa: ");
+						scanf("%i", &dia);
+					}
+				}
+				                
+				if(verificar==0)
+				{
+					strcpy(cedula, temp_cedula);
+					nuevoAyudante(cedula, nombre, puesto, funcs, dia, mes, anio);
+					printf("\n**Muy bien! Se ha logrado registrar al nuevo ayudante de Santa con exito!**\n");
+				}
+				else 
+				{
+					printf("\nOh! Parece que ya se ha registrado a este ayudante anteriormente\n");
+				}
+			}
+			else if(opc==2)
+			{
+				mostrar_Ayudantes();
+			}
+			else if(opc==3)
+			{
+				modificar_Ayudante();
+			}
+			else if(opc==4)
+			{
+				printf("Ingrese el numero de identificacion del ayudante a eliminar (formato X-XXXX-XXXX): ");
+				fflush(stdin);
+				scanf("%[^\n]", &id_ayudante);
+				while (strlen(id_ayudante)!=11) //Comparar la cantidad de caracteres
+				{
+					printf("Digite nuevamente el id ayudante, con el formato solicitado (X-XXXX-XXXX): ");
+					fflush(stdin);
+					scanf("%[^\n]", &id_ayudante);
+				}
+				eliminarAyudante(id_ayudante);
+			}
+		}
+	}
+}	
+
+//------------------------------------STRUCT JUGUETES-----------------------------------
+struct juguete
+{
+    int codigo, min, max, costo, cant; //juguete will store an integer
+    char nombre[30], desc[100], categoria[30];
+	struct juguete *hijo_der; // hijo_der child
+    struct juguete *hijo_izq; // hijo_izq child
+}*root=NULL;
+typedef struct juguete jug;
+
+
+struct juguete* nuevoJuguete(int cod, char *nombre, char *desc, char *categoria, int max, int min, int costo)
+{
+    struct juguete *nuevo;
+    nuevo = malloc(sizeof(struct juguete));
+    
+    nuevo->codigo=cod;
+    strcpy(nuevo->nombre, nombre);
+    strcpy(nuevo->desc, desc);
+	strcpy(nuevo->categoria, categoria);
+    nuevo->max=max;
+    nuevo->min=min;
+    nuevo->costo=costo;
+    
+    nuevo->hijo_izq = NULL;
+    nuevo->hijo_der = NULL;
+
+    return nuevo;
+}
+
+struct juguete* insertarJuguete(struct juguete *root, int cod, char *nombre, char *desc, char *categoria, int max, int min, int costo)
+{
+    //searching for the place to insertarJuguete
+    if(root==NULL)
+    {
+    	return nuevoJuguete(cod, nombre, desc, categoria, max, min, costo);
+	}   
+    else if(cod>root->codigo) // cod is greater. Should be inserted to hijo_der
+    {
+    	root->hijo_der=insertarJuguete(root->hijo_der, cod, nombre, desc, categoria, max, min, costo);
+	}   
+    else // cod is smaller should be inserted to hijo_izq
+    {
+    	root->hijo_izq = insertarJuguete(root->hijo_izq,cod, nombre, desc, categoria, max, min, costo);
+	}
+    return root;
+}
+
+
+void mostrarJuguetes(struct juguete *root)//recorrido inorden
+{
+    if(root!=NULL) // checking if the root is not null
+    {
+        mostrarJuguetes(root->hijo_izq); // visiting hijo_izq child
+        
+        printf("\tJUG-0%d\n", root->codigo); // printing codigo at root
+        printf("\tNombre: %s\n", root->nombre);
+        printf("\tCategoria: %s\n", root->categoria);
+        printf("\tDescripcion: %s\n", root->desc);
+        printf("\tRango de edad recomendado: %d-%d\n\n", root->min, root->max);
+        
+        mostrarJuguetes(root->hijo_der);// visiting hijo_der child
+    }
+}
+
+
+void modificarJug(jug *root, char *juguete) //BUSCAR UN JUGUETE
+{
+	int dato;
+	char elecc[3]="Si";
+	
+    if (root!=NULL) 
+	{ 
+        /* If root is not NULL... */
+
+        /* recursively process hijo_izq subtree if present.. */
+        if (root->hijo_izq) 
+        {
+        	modificarJug(root->hijo_izq, juguete);
+		}
+		
+        /* then check the current node.. */
+        if (strcmp(root->nombre, juguete)) 
+		{
+            printf("\n\tJUG-0%d\n", root->codigo); // printing codigo at root
+	        printf("\t(1)Nombre: %s\n", root->nombre);
+	        printf("\t(2)Categoria: %s\n", root->categoria);
+	        printf("\t(3)Descripcion: %s\n", root->desc);
+	        printf("\t(4)Rango de edad recomendado: %d-%d\n", root->min, root->max);
+	        printf("\t(5)Costo total del juguete: $%d\n\n", root->costo);
+	        
+	        while (strcmp(elecc,"si")==0 || strcmp(elecc,"Si")==0)
+	        {
+	        	printf("\nDigite el numero correspondiente al dato que desea modificar: ");
+				scanf("%i",&dato);
+				while(dato<0)
+		        {
+		            printf("\nDigite nuevamente el numero de dato a modificar: ");
+		            fflush(stdin);
+		            scanf("%i", &dato);
+		        }
+					
+				if (dato==1)
+				{
+					printf("Digite el nuevo nombre del juguete: ");
+					fflush(stdin);
+					scanf("%[^\n]", &root->nombre);
+				}
+				else if (dato==2)
+				{
+					printf("Digite la nueva categoria del juguete: ");
+					fflush(stdin);
+					scanf("%[^\n]", &root->categoria);
+				}
+				else if (dato==3)
+				{
+					printf("Digite la descripcion del juguete: ");
+					fflush(stdin);
+					scanf("%[^\n]", &root->desc);
+				}
+				else if (dato==4)
+				{
+					printf("Edad MAXIMA recomendada para utilizar el juguete: ");
+					scanf("%i", &root->max);
+					
+					printf("Edad MINIMA recomendada para utilizar el juguete: "); 
+					scanf("%i", &root->min);
+					while (root->min>root->max)
+					{
+						printf(">>Digite nuevamente la edad MINIMA para utilizar el juguete: ");
+						scanf("%i", &root->min);
+					}
+				}
+				else if (dato==5)
+				{
+					printf("Costo total de fabricacion: $");
+					scanf("%d",&root->costo);
+				}
+				printf("Si desea modificar otro dato, digite 'Si', digite 'No' en caso contrario: ");
+				scanf("%s",&elecc);
+			}
+        }
+
+        /* then recursively process the hijo_der subtree if present. */
+        if (root->hijo_der) 
+        {
+        	modificarJug(root->hijo_der, juguete);
+		}
+    } 
+	else
+	{
+		printf("No hay juguetes!");
+	}
+}
+
+
+struct juguete* find_minimum(struct juguete *root)
+{
+    if(root == NULL)
+    {
+    	return NULL;
+	}
+    else if(root->hijo_izq != NULL) // juguete with minimum value will have no hijo_izq child
+    {
+    	return find_minimum(root->hijo_izq); // hijo_izq most element will be minimum
+	}
+    return root;
+}
+
+struct juguete* eliminarJug(struct juguete *root, int cod)
+{
+    int encontrado=0;
+
+    if(root!=NULL)
+    {
+
+                //searching for the item to be deleted
+                if(root==NULL)
+                    return NULL;
+                if (cod>root->codigo)
+                    root->hijo_der = eliminarJug(root->hijo_der, cod);
+                else if(cod<root->codigo)
+                    root->hijo_izq = eliminarJug(root->hijo_izq, cod);
+                else
+                {
+                    //No Children
+                    if(root->hijo_izq==NULL && root->hijo_der==NULL)
+                    {
+                        root=NULL;
+                    }
+
+                    //One Child
+                    else if(root->hijo_izq==NULL || root->hijo_der==NULL)
+                    {
+                        struct juguete *temp;
+                        if(root->hijo_izq==NULL)
+                        {
+                            temp = root->hijo_der;
+                        }
+                        else
+                        {
+                            temp = root->hijo_izq;
+                        }
+                        root=NULL;
+                    }
+
+                    //Two Children
+                    else
+                    {
+                        struct juguete *temp = find_minimum(root->hijo_der);
+                        root->codigo = temp->codigo;
+                        root->hijo_der = eliminarJug(root->hijo_der, temp->codigo);
+                    }
+                    printf("\nJuguete eliminado con exito");
+                    encontrado=1;
+                }
+                return root;
+            }
+    else
+    {
+        printf("\nEl juguete no fue encontrado\n\n");
+    }
+}
+int obtener_cod(jug *root, char *juguete) //BUSCAR UN JUGUETE
+{
+	int dato;
+	
+    if (root!=NULL) 
+	{ 
+        /* If root is not NULL... */
+
+        /* recursively process hijo_izq subtree if present.. */
+        if (root->hijo_izq) 
+        {
+        	obtener_cod(root->hijo_izq, juguete);
+		}
+		
+        /* then check the current node.. */
+        if (strstr(root->nombre, juguete)) 
+		{
+            return (root->codigo);
+        }
+
+        /* then recursively process the hijo_der subtree if present. */
+        if (root->hijo_der) 
+        {
+        	obtener_cod(root->hijo_der, juguete);
+		}
+    } 
+	else
+	{
+		printf("No hay juguetes!");
+	}
+}
+
+void Juguetes(jug *root)
+{
+	int opc=-1, min=-1, max=-1, costo=-1, cod=-1;
+	char nombre[30], categoria[30], desc[100]; 
+	
+	while(opc!=5)
+	{
+	    printf("\n           >>JUGUETES<<          ");
+		printf("\n  1. Agregar juguete             ");
+		printf("\n  2. Mostrar juguetes            ");
+	    printf("\n  3. Modificar datos de juguete  ");
+		printf("\n  4. Eliminar juguete            ");
+	    printf("\n  5. Volver al menu principal    ");
+		printf("\n\nDigite el numero de la opcion a revisar:  ");
+	   	fflush(stdin);   
+	   	if(scanf("%d",&opc)!=1)
+    	{
+			printf("Error en la opcion ingresada \n"); 
+		}
+		else
+		{  
+		    while(opc<0)
+	        {
+	            printf("\nDigite nuevamente la opcion a revisar: ");
+	            fflush(stdin);
+	            scanf("%d", &opc);
+	        }
+	
+			if(opc==1)
+			{
+				printf("Ingrese el codigo: JUG-0");
+				scanf("%i", &cod);
+				while(cod<0)
+	            {
+	                printf("\nDigite nuevamente el codigo: JUG-0");
+	                fflush(stdin);
+	                scanf("%i", &cod);
+	            }
+				
+				printf("Ingrese el nombre del juguete: ");
+				fflush(stdin); //limpia buffer de espacios y saltos
+				scanf("%[^\n]",&nombre);
+				
+				printf("Categoria: ");
+				fflush(stdin);
+				scanf("%[^\n]", &categoria);
+				
+				printf("Descripcion del juguete: ");
+				fflush(stdin);
+				scanf("%[^\n]", &desc);
+					
+				printf(">>Digite el numero que corresponde a lo que se le solicita a continuacion<<\n");
+				printf("Edad MAXIMA recomendada para utilizar el juguete: ");
+				scanf("%i", &max); 
+				while(max<0)
+	            {
+	                printf("\nEdad MAXIMA recomendada para utilizar el juguete (numero): ");
+	                fflush(stdin);
+	                scanf("%i", &max);
+	            }
+				printf("Edad MINIMA recomendada para utilizar el juguete: ");
+				scanf("%i", &min);
+				while(min<0)
+	            {
+	                printf("\nEdad MINIMA recomendada para utilizar el juguete (numero): ");
+	                fflush(stdin);
+	                scanf("%i", &min);
+	            }
+				while (min>max)
+				{
+					printf(">>Digite nuevamente la edad MINIMA para utilizar el juguete: ");
+					scanf("%i", &min);
+					while(min<0)
+		            {
+		                printf("\nEdad MINIMA recomendada para utilizar el juguete (numero): ");
+		                fflush(stdin);
+		                scanf("%i", &min);
+		            }
+				}
+				
+				printf("Costo total de fabricacion del juguete: $");
+				scanf("%i", &costo);
+				while(costo<0)
+	            {
+	                printf("\nDigite nuevamente el costo de fabricacion del juguete: $");
+	                fflush(stdin);
+	                scanf("%i", &costo);
+	            }
+				 
+				insertarJuguete(root, cod, nombre, desc, categoria, max, min, costo);
+				printf("\n**Muy bien! Se ha logrado registrar el nuevo juguete con exito!**\n");
+			}
+			else if(opc==2)
+			{
+				mostrarJuguetes(root);
+			}
+			else if(opc==3)
+			{
+				printf("Digite el nombre del juguete del cual desea modificar sus datos: ");
+				fflush(stdin);
+				scanf("%[^\n]", &nombre);
+				modificarJug(root, nombre);
+			}
+			else if(opc==4)
+			{
+				printf("Digite el nombre del juguete: ");
+				fflush(stdin);
+				scanf("%[^\n]", &nombre);
+				eliminarJug(root, obtener_cod(root, nombre));
+			}
+		}
+	}
+}
+
+//------------------------------------STRUCT COMPORTAMIENTOS-----------------------------------
+typedef struct comportamientos
+{
+	char nombrePadre[30], cedu_nino[12], fecha[30], descripcion[100]; 
+	int comportamientos_buenos, comportamientos_malos;
+	struct comportamientos* sig_compor;
+} comportamientos;
+
+
+comportamientos* primer_compor=NULL;
+comportamientos* ultimo_compor=NULL;
+
+int nuevoComportamiento(char *nombrePadre, char  *cedu_nino, char *fecha, char *descripcion, int conducta) 
+{ 
+	comportamientos *nuevo=(comportamientos*) malloc(sizeof(comportamientos));
+	
+	strcpy(nuevo->nombrePadre, nombrePadre);
+	strcpy(nuevo->cedu_nino, cedu_nino);
+    strcpy(nuevo->fecha, fecha);
+    strcpy(nuevo->descripcion, descripcion);
+    
+	if (conducta == 1)
+	{
+		nuevo->comportamientos_buenos ++;
+	}
+	else
+	{
+		nuevo->comportamientos_malos ++;
+	} 
+    
+	if(primer_compor==NULL)	
+	{
+		primer_compor=nuevo;
+		primer_compor->sig_compor=NULL;
+		ultimo_compor=nuevo;
+	}
+	ultimo_compor->sig_compor=nuevo;
+	nuevo->sig_compor=NULL;
+	ultimo_compor=nuevo;
+}
+
+
+int comportamiento()
+{
+	//system("color 01");
+	int opc, verificar, conducta;
+	char  nombrePadre[30], cedu_nino[12], fecha[30], descripcion[100],temp_cedula[30]; 
+
+	nino* actual=(nino*) malloc(sizeof(nino));
+	actual=primer_Nino;
+	
+	printf("Ingrese el nombre del padre o madre del nino: ");
+	fflush(stdin); //limpia buffer de espacios y saltos
+	scanf("%[^\n]",&nombrePadre);
+
+	
+	printf("Ingrese la cedula del nino(a) (formato X-XXXX-XXXX): "); 
+	fflush(stdin);
+	scanf("%[^\n]", &temp_cedula);
+	while (strlen(temp_cedula)!=11) //Comparar la cantidad de caracteres
+	{
+		printf("Digite nuevamente el id del nino(a), con el formato solicitado (X-XXXX-XXXX): ");
+		fflush(stdin);
+		scanf("%[^\n]", &temp_cedula);
+	}
+	while(actual!=NULL)
+	{
+		if (strcmp(actual->cedula , temp_cedula)==0)
+		{ 
+			verificar++;
+		}
+		actual = actual->sig_Nino;
+	}
+	if(verificar==0)
+	{
+		printf("\nOh! Parece que este nino(a) no esta registrado en el sistema \n");
+	}
+	else
+	{	
+		printf("Ingrese una descripcion del comportamiento del nino(a): ");
+		fflush(stdin);
+		scanf("%[^\n]", &descripcion);
+		
+		while (conducta != 1 && conducta != 2)
+		{
+			printf("Ingrese 1 si el comportamiento a registrar es *BUENO* o 2 si es *MALO*: ");
+			fflush(stdin);
+			if(scanf("%i", &conducta)!=1)
+			{
+                printf("\nSolo puede digitar 1 o 2.\n");
+            }
+		}
+		
+		if(verificar==1)
+		{
+			nuevoComportamiento(nombrePadre, cedu_nino, fecha, descripcion, conducta);
+			int dia,mes,anio,fecha_F;
+		    char diaSTR[3],mesSTR[3],anioSTR[3],fecha_C[30];
+		    
+		    time_t tiempo = time(0);
+			struct tm *tlocal = localtime(&tiempo);
+			
+			strftime(mesSTR,3,"%m",tlocal);
+			strftime(anioSTR,5,"%Y",tlocal);
+			strftime(diaSTR,3,"%d",tlocal);
+		
+			dia=atoi(diaSTR);
+			mes=atoi(mesSTR);
+			anio=atoi(anioSTR);
+			
+			snprintf(fecha_C, sizeof fecha_C, "%s/%s/%s", diaSTR, mesSTR, anioSTR);
+			printf("\nFecha del registro: %s \n",fecha_C);
+			printf("\n**Muy bien! Se ha logrado registrar el comportamiento con exito!**\n");	
+		}
+	}
+	
+}
+
+
+void cant_compotamientos()
+{
+	comportamientos *actual=(comportamientos*) malloc(sizeof(comportamientos));
+	actual = primer_compor;
+	int buenos,malos;
+	
+	while(actual!=NULL)
+	{
+		if (actual->comportamientos_buenos == 1)
+		{ 
+			buenos++;
+			
+		}
+		else
+		{
+			malos++;
+		} 
+		actual = actual->sig_compor;
+	}
+	printf("\n Cantidad de comportamientos BUENOS: -%i- \n",buenos);
+	printf("\n Cantidad de comportamientos MALOS: -%i- \n",malos);
+}
+
+
+//------------------------------------STRUCT REGISTRO DE CARTAS-----------------------------------
+
+typedef struct cartas
+{
+	char nombreNino[30], cedula[30], juguetes[15], list_deseos[15];
+	int numJuguetes, anio;
+	struct cartas* sig_carta;
+} cartas;
+
+
+cartas* primer_carta=NULL;
+cartas* ultimo_carta=NULL;
+
+
+int nuevaCarta(char *cedula, char  *nombreNino, char *juguetes,char *list_deseos, int numJuguetes, int anio) //Funcion para insertar
+{
+	cartas *nuevo=(cartas*) malloc(sizeof(cartas));
+	
+	strcpy(nuevo->nombreNino, nombreNino);
+	strcpy(nuevo->cedula, cedula);
+    strcpy(nuevo->juguetes, juguetes);
+    strcpy(nuevo->list_deseos, list_deseos);
+    nuevo->numJuguetes=numJuguetes;
+    nuevo->anio=anio; 
+
+	if(primer_carta==NULL)	
+	{
+		primer_carta=nuevo;
+		primer_carta->sig_carta=NULL;
+		ultimo_carta=nuevo;
+	}
+	ultimo_carta->sig_carta=nuevo;
+	nuevo->sig_carta=NULL;
+	ultimo_carta=nuevo;
+}
+
+
+
+int mostrar_carta()
+{
+	char identificacion[12];
+	int anio;
+	
+	cartas* actual = (cartas*) malloc(sizeof(cartas));  
+	actual = primer_carta;
+	
+	if(primer_carta != NULL)
+	{	
+		printf("Digite la identificacion del nino(a) para consultar su respectiva carta (X-XXXX-XXXX): "); 
+		fflush(stdin);
+		scanf("%[^\n]", &identificacion);
+		
+		while(actual != NULL)
+		{
+			if( strcmp(identificacion, actual->cedula)==0)
+			{	
+				printf("Ingrese el anio de la carta: ");
+				fflush(stdin);   
+	   			if(scanf("%d",&anio)!=1)
+    			{
+					printf("Error en la opcion ingresada \n"); 
+				}
+				else
+				{ 
+					actual = primer_carta;
+					while(actual != NULL)
+					{
+						if (anio == actual->anio)
+						{
+							printf("\t\n----Informacion de la Carta----\n");
+							printf("\n  -Nombre del nino(a): %s\n  -Cedula: %s\n  -Anio del pedido: %d\n  -Juguetes Pedidos: %s,\n  -Lista de deseos: %s,\n", actual->nombreNino, actual->cedula, actual->anio, actual->juguetes, actual->list_deseos);
+							return;
+						}
+						else actual= actual->sig_carta;	
+					}
+				}
+			}
+			else actual= actual->sig_carta;  
+		}
+		printf("Parece que la cedula no ha registrado ninguna carta");
+	}
+	else
+	{
+		printf("\nParece que no hay ninos con cartas registrados\n\n");
+	}
+}
+
+
+//Principal
+int main (void)
+{
+	int opc;
+	struct juguete *root;
+    root=nuevoJuguete(10, "Bola de futbol", "Partido de futbol 5", "Deportes", 99, 7, 3);
+	
+	while (opc!=10)
+	{
+	    printf("\n           >>MENU PRINCIPAL<<         ");
+		printf("\n  1.  Registro de ninos(as)           ");
+		printf("\n  2.  Registro de ayudantes de Santa  ");
+		printf("\n  3.  Registro de juguetes            ");
+		printf("\n  4.  Lugares de domicilio            ");
+		printf("\n  5.  Registro comportamiento de ninos");
+		printf("\n  6.  Carta a Santa                   ");
+		printf("\n  7.  Procesar cartas para Santa      ");
+		printf("\n  8.  Entregar regalos                ");
+	    printf("\n  9.  Analisis de datos               ");
+	    printf("\n  10. Finalizar programa              ");
+		printf("\n\nDigite el numero de la opcion a revisar:  ");  
+		fflush(stdin);   
+	   	if(scanf("%i",&opc)!=1)
+    	{
+			printf("Error en la opcion ingresada \n"); 
+		}
+		else
+		{  
+		    if (opc==1)
+		    {
+		    	Ninos();    	
+			}
+			else if(opc==2)
+			{
+				Ayudantes();
+			}
+			else if(opc==3)
+			{
+				Juguetes(root);
+			}
+			else if(opc==4)
+			{
+				//catalogo de lugares
+			}
+			else if(opc==5)
+			{
+				comportamiento();
+			}
+			else if(opc==6)
+			{
+				
+			}
+			else if(opc==7)
+			{
+				
+			}
+			else if(opc==8)
+			{
+				
+			}
+			else if(opc==9)
+			{
+				cant_compotamientos();
+			}
+			else if(opc>11||opc<1)
+			{
+				printf("\n Error en la opcion ingresada\n");
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+	return 0;
+	system("PAUSE");
+}
+
+
+
+
