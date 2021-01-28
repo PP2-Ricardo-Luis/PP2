@@ -12,13 +12,13 @@
 
 //------------------------------------STRUCT NIÑOS------------------------------------------------------------------------------------------------------------
 
-/*Entradas: El nivel de acceso, nombre del niño (a), numero de cedula, correo y otros datos mas.
+/*Entradas: El nivel de acceso, nombre del niño (a), numero de cedula, correo_electronico y otros datos mas.
 Salidas: Presenta un nuevo nodo en una lista simple.
 Restricciones: Solo presenta un puntero a siguiente */
 
 typedef struct nino
 {
-	char nombre[30], cedula[30], correo[30], necs[100], residencia[30];
+	char nombre[30], identificacion[30], correo_electronico[30], necesidades[100], residencia[30];
 	int dia, mes, anio, edad;
 	struct nino* sig_Nino;
 } nino;
@@ -32,15 +32,15 @@ nino* ultimo_Nino=NULL;
 /*Entradas: Las variables para la creacion de un registro con los niños(as)
 Salidas: Un nuevo nodo con los datos del nuevo niño(a)
 Restricciones: Esta funcionalidad es solo para los niños(as) */
-int nuevoNino(char *cedula, char  *nombre, char *correo,char *necesidades, int dia, int mes, int anio, int edad, char *resi)
+int nuevo_nino(char *identificacion, char  *nombre, char *correo_electronico,char *necesidades, int dia, int mes, int anio, int edad, char *resi)
 { 
 	nino *nuevo=(nino*) malloc(sizeof(nino));
 	
 	strcpy(nuevo->nombre, nombre);
-	strcpy(nuevo->cedula, cedula);
-    strcpy(nuevo->correo, correo);
+	strcpy(nuevo->identificacion, identificacion);
+    strcpy(nuevo->correo_electronico, correo_electronico);
     strcpy(nuevo->residencia, resi);
-    strcpy(nuevo->necs, necesidades);
+    strcpy(nuevo->necesidades, necesidades);
     nuevo->dia=dia;
     nuevo->mes=mes;
     nuevo->anio=anio;
@@ -62,7 +62,7 @@ int nuevoNino(char *cedula, char  *nombre, char *correo,char *necesidades, int d
 /*Entradas: Todos los datos que presenta el struct de niños.
 Salidas: Muestra en pantalla todos los datos de los miembros que se encuentren registrados. 
 Restricciones: Solo se mostraran los niños(as) que esten inscritos previamente. */
-void mostrar_Ninos()//Imprime 
+void Mostrar_ninos()//Imprime 
 {
 	nino* actual = (nino*) malloc(sizeof(nino)); // crea nodos 
 	actual = primer_Nino;
@@ -73,9 +73,9 @@ void mostrar_Ninos()//Imprime
 		{
 			printf("\n   ---Informacion del Nino(a)----   \n");
 			printf("\n  Nombre completo: %s",actual->nombre);
-			printf("\n  Cedula: %s",actual->cedula);  
-			printf("\n  Correo electronico: %s",actual->correo);
-			printf("\n  Necesidades especiales: %s",actual->necs);
+			printf("\n  Identificacion: %s",actual->identificacion);  
+			printf("\n  correo_electronico: %s",actual->correo_electronico);
+			printf("\n  Necesidades especiales: %s",actual->necesidades);
 			printf("\n  Residencia: %s",actual->residencia);
 			printf("\n  Edad: %i",actual->edad);
 			printf("\n  Fecha de nacimiento: %i/%i/%i",actual->dia, actual->mes, actual->anio); 
@@ -84,7 +84,7 @@ void mostrar_Ninos()//Imprime
 	}
 	else
 	{
-		printf("\n No hay ninos registrados en el programa.\n\n");
+		printf("\n No hay Ninos(as) registrados en el programa.\n\n");
 	}
 }
 
@@ -93,7 +93,7 @@ void mostrar_Ninos()//Imprime
 /*Entradas: Todos los datos que presenta el struct de niños.
 Salidas: Se modifican los datos que el usuario necesite. 
 Restricciones: Solo se mostraran los miembros que esten inscritos previamente.*/
-int modificar_Nino() 
+int Modificar_nino() 
 {
 	char id[12], nombre[30], elecc[3]="Si";
 	int dato=-1, encontrado;
@@ -115,13 +115,13 @@ int modificar_Nino()
 	{
 		while(actual!=NULL && encontrado!=1)
 		{
-			if (strcmp(actual->cedula, id)==0)
+			if (strcmp(actual->identificacion, id)==0)
 			{
 				printf("\n   ---Informacion del Nino(a)----   \n");
 				printf("\n  1) Nombre completo: %s",actual->nombre);
-				printf("\n  2) Cedula: %s",actual->cedula);  
-				printf("\n  3) Correo electronico: %s",actual->correo);
-				printf("\n  4) Necesidades especiales: %s",actual->necs);
+				printf("\n  2) Identificacion: %s",actual->identificacion);  
+				printf("\n  3) correo electronico : %s",actual->correo_electronico);
+				printf("\n  4) Necesidades especiales: %s",actual->necesidades);
 				printf("\n  5) Residencia: %s",actual->residencia);
 				printf("\n  6) Edad: %i",actual->edad);
 				printf("\n  7) Fecha de nacimiento: %i/%i/%i",actual->dia, actual->mes, actual->anio); 
@@ -150,31 +150,31 @@ int modificar_Nino()
 		if (dato==1)
 		{
 			printf("Ingrese el nombre completo del nino(a): ");
-			fflush(stdin); //limpia buffer de espacios y saltos
+			fflush(stdin); 
 			scanf("%[^\n]",&actual->nombre);
 		}
 		else if (dato==2)
 		{
 			printf("Ingrese el numero de identificacion del nino(a) con el formato X-XXXX-XXXX: ");
 			fflush(stdin);
-			scanf("%[^\n]", &actual->cedula);
-			while (strlen(actual->cedula)!=11) //Comparar la cantidad de caracteres
+			scanf("%[^\n]", &actual->identificacion);
+			while (strlen(actual->identificacion)!=11) 
 			{
 				printf("Error en el numero de identificacion del nino(a),ingrese el formato solicitado (X-XXXX-XXXX): ");
 				fflush(stdin);
-				scanf("%[^\n]", &actual->cedula);
+				scanf("%[^\n]", &actual->identificacion);
 			}
 		}
 		else if (dato==3)
 		{
-			printf("Ingrese el nuevo correo electronico: ");
-			scanf("%s",&actual->correo);
+			printf("Ingrese el nuevo correo_electronico: ");
+			scanf("%s",&actual->correo_electronico);
 		}
 		else if (dato==4)
 		{
 			printf("Ingrese las necesidades particulares del nino(a), si no posee alguna necesidad digite 'No posee': ");
 			fflush(stdin);
-			scanf("%[^\n]", &actual->necs);
+			scanf("%[^\n]", &actual->necesidades);
 		}
 		else if (dato==5)
 		{
@@ -297,7 +297,7 @@ void eliminarNino(char *id_nino)
 		while(actual!=NULL && encontrado!=1)
 		{
 			
-			if(strcmp(actual->cedula,id_nino)==0)
+			if(strcmp(actual->identificacion,id_nino)==0)
 			{
 	
 				if(actual==primer_Nino)
@@ -314,7 +314,7 @@ void eliminarNino(char *id_nino)
 					anterior->sig_Nino=actual->sig_Nino;
 				}
 				
-				printf("\nEl nino (a) quedo eliminado(a) del programa de manera exitosamente");
+				printf("\nEl nino(a) quedo eliminado(a) del programa de manera exitosamente");
 				encontrado=1;
 			}
 			anterior=actual;
@@ -340,10 +340,10 @@ void eliminarNino(char *id_nino)
 /*Entradas: No posee entradas.
 Salidas: Las diferentes funciones que presenta la estructura.
 Restricciones: Solo se pueden realizar las funciones que presente el menu */
-int Ninos()
+int Funcion_Ninos()
 {
 	int opc, verificar, dia, mes, anio, diaActual, mesActual, anioActual, edad;
-	char  nombre[30], correo[30], cedula[30], temp_cedula[30], neces[100], id_nino[12], diaSTR[3], mesSTR[3], anioSTR[5], resi[35]; 
+	char  nombre[30], correo_electronico[30], identificacion[30], temp_identificacion[30], neces[100], id_nino[12], diaSTR[3], mesSTR[3], anioSTR[5], resi[35]; 
 
 	time_t tiempo = time(0);
 	struct tm *tlocal = localtime(&tiempo);
@@ -358,9 +358,9 @@ int Ninos()
 	
 	while(opc!=5)
 	{
-	    printf("\n            ---NINOS (AS)---          ");
+	    printf("\n            ---Ninos(as)---            ");
 		printf("\n       1) Agregar nino(a)              ");
-		printf("\n       2) Mostrar ninos(as)            ");
+		printf("\n       2) Mostrar Ninos(as)            ");
 	    printf("\n       3) Modificar datos de nino(a)   ");
 		printf("\n       4) Eliminar nino(a)             ");
 	    printf("\n       5) Volver al menu principal     ");
@@ -386,18 +386,18 @@ int Ninos()
 				
 				printf("Ingrese el numero de identificacion del nino(a) con un formato X-XXXX-XXXX: ");
 				fflush(stdin);
-				scanf("%[^\n]", &temp_cedula);
+				scanf("%[^\n]", &temp_identificacion);
 				
-				while (strlen(temp_cedula)!=11)
+				while (strlen(temp_identificacion)!=11)
 				{
 					printf("Error en el numero de identificacion del nino(a),ingrese el formato solicitado (X-XXXX-XXXX): ");
 					fflush(stdin);
-					scanf("%[^\n]", &temp_cedula);
+					scanf("%[^\n]", &temp_identificacion);
 				}
 				
 				while(actual!=NULL)
 				{
-					if (strcmp(actual->cedula , temp_cedula)==0)
+					if (strcmp(actual->identificacion , temp_identificacion)==0)
 					{ 
 						verificar++;
 					}
@@ -408,8 +408,8 @@ int Ninos()
 				fflush(stdin);
 				scanf("%[^\n]", &resi);
 				
-				printf("Ingrese la direccion de correo electronico: ");
-				scanf("%s", correo);
+				printf("Ingrese la direccion de correo_electronico electronico: ");
+				scanf("%s", correo_electronico);
 				
 				printf("Ingrese las necesidades particulares del nino(a), si no posee digite 'No posee': ");
 				fflush(stdin);
@@ -493,22 +493,22 @@ int Ninos()
 				                
 				if(verificar==0)
 				{
-					strcpy(cedula, temp_cedula);
-					nuevoNino(cedula, nombre, correo, neces, dia, mes, anio, edad, resi);
-					printf("\n El niño(a) se ha agregado de manera exitosa.\n");
+					strcpy(identificacion, temp_identificacion);
+					nuevo_nino(identificacion, nombre, correo_electronico, neces, dia, mes, anio, edad, resi);
+					printf("\n El nino(a) se ha agregado de manera exitosa.\n");
 				}
 				else 
 				{
-					printf("\El niño(a) ya ha sido registrado anteriormente.\n");
+					printf("\El nino(a) ya ha sido registrado anteriormente.\n");
 				}
 			}
 			else if(opc==2)
 			{
-				mostrar_Ninos();
+				Mostrar_ninos();
 			}
 			else if(opc==3)
 			{
-				modificar_Nino();
+				Modificar_nino();
 			}
 			else if(opc==4)
 			{
@@ -528,15 +528,15 @@ int Ninos()
 }		
 
 
-//------------------------------------STRUCT AYUDANTES------------------------------------------------------------------------------------------------------------
+//------------------------------------STRUCT Ayudantes------------------------------------------------------------------------------------------------------------
 
 
-/*Entradas: El nivel de acceso, nombre del niño (a), numero de cedula, correo y otros datos mas.
+/*Entradas: El nivel de acceso, nombre del niño (a), numero de identificacion, correo_electronico y otros datos mas.
 Salidas: Presenta un nuevo nodo en una lista simple.
 Restricciones: Solo presenta un puntero a siguiente */
 typedef struct ayudante
 {
-	char nombre[30], cedula[30], puesto[30], funcs[100];
+	char nombre[30], identificacion[30], puesto[30], funciones[100];
 	int dia, mes, anio, cartasXAyud;
 	struct ayudante* sig_Ayudante;
 } ayudante;
@@ -547,17 +547,17 @@ ayudante* ultimo_Ayudante=NULL;
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-/*Entradas: Las variables para la creacion de un registro con los ayudantes.
+/*Entradas: Las variables para la creacion de un registro con los Funcion_Ayudantes.
 Salidas: Un nuevo nodo con los datos del nuevo ayudante
-Restricciones: Esta funcionalidad solo es para los ayudantes.  */
-int nuevoAyudante(char *cedula, char  *nombre, char *puesto,char *funcs, int dia, int mes, int anio) //Funcion para insertar
+Restricciones: Esta funcionalidad solo es para los Ayudantes.  */
+int nuevoAyudante(char *identificacion, char  *nombre, char *puesto,char *funciones, int dia, int mes, int anio) //Funcion para insertar
 { 
 	ayudante *nuevo=(ayudante*) malloc(sizeof(ayudante));
 	
 	strcpy(nuevo->nombre, nombre);
-	strcpy(nuevo->cedula, cedula);
+	strcpy(nuevo->identificacion, identificacion);
     strcpy(nuevo->puesto, puesto);
-    strcpy(nuevo->funcs, funcs);
+    strcpy(nuevo->funciones, funciones);
     nuevo->dia=dia;
     nuevo->mes=mes;
     nuevo->anio=anio;
@@ -575,13 +575,13 @@ int nuevoAyudante(char *cedula, char  *nombre, char *puesto,char *funcs, int dia
 }
 
 
-//Mostrar toda la informacion de todos los ayudantes de santa
-/*Entradas: Todos los datos que presenta el struct de ayudantes
-Salidas: Muestra en pantalla todos los datos de los ayudantes que se encuentren registrados. 
-Restricciones: Solo se mostraran los ayudantes que esten inscritos previamente. */
-void mostrar_Ayudantes()//Imprime 
+//Mostrar toda la informacion de todos los Ayudantes de santa
+/*Entradas: Todos los datos que presenta el struct de Funcion_Ayudantes
+Salidas: Muestra en pantalla todos los datos de los Funcion_Ayudantes que se encuentren registrados. 
+Restricciones: Solo se mostraran los Ayudantes que esten inscritos previamente. */
+void mostrar_Ayudantes()
 {
-	ayudante* actual=(ayudante*) malloc(sizeof(ayudante)); // crea nodos 
+	ayudante* actual=(ayudante*) malloc(sizeof(ayudante)); 
 	actual=primer_Ayudante;
 	
 	if(primer_Ayudante!=NULL)
@@ -591,24 +591,25 @@ void mostrar_Ayudantes()//Imprime
 		
 			printf("\n    ---Informacion del Ayudante de Santa---\n");
 			printf("\n   Nombre completo: %s",actual->nombre);
-			printf("\n   Cedula: %s",actual->cedula);
+			printf("\n   identificacion: %s",actual->identificacion);
 			printf("\n   Puesto: %s",actual->puesto);
-			printf("\n   Funciones: %s",actual->funcs);
+			printf("\n   Funciones: %s",actual->funciones);
 			printf("\n   Fecha de inicio de labores: %i/%i/%i", actual->dia, actual->mes, actual->anio);
+			actual=actual->sig_Ayudante;
 		}
 	}
 	else
 	{
-		printf("\n No hay ayudantes registrados en el programa.\n\n");
+		printf("\n No hay Ayudantes registrados en el programa.\n\n");
 	}
 }
 
 ///-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //Modificar los datos de un ayudante.
-/*Entradas: Todos los datos que presenta el struct de ayudantes.
+/*Entradas: Todos los datos que presenta el struct de Ayudantes.
 Salidas: Se modifican los datos que el usuario necesite. 
-Restricciones: Solo se mostraran los ayudantes que esten inscritos previamente.*/
+Restricciones: Solo se mostraran los Ayudantes que esten inscritos previamente.*/
 int modificar_Ayudante() 
 {
 	char id[12], nombre[30], elecc[3]="Si";
@@ -631,14 +632,14 @@ int modificar_Ayudante()
 	{
 		while(actual!=NULL && encontrado!=1)
 		{
-			if (strcmp(actual->cedula, id)==0)
+			if (strcmp(actual->identificacion, id)==0)
 			{
 				printf("\n    ---Informacion del Ayudante de Santa---\n");
-				printf("\n   Nombre completo: %s",actual->nombre);
-				printf("\n   Cedula: %s",actual->cedula);
-				printf("\n   Puesto: %s",actual->puesto);
-				printf("\n   Funciones: %s",actual->funcs);
-				printf("\n   Fecha de inicio de labores: %i/%i/%i", actual->dia, actual->mes, actual->anio);
+				printf("\n   1) Nombre completo: %s",actual->nombre);
+				printf("\n   2) Identificacion: %s",actual->identificacion);
+				printf("\n   3) Puesto: %s",actual->puesto);
+				printf("\n   4) Funciones: %s",actual->funciones);
+				printf("\n   5) Fecha de inicio de labores: %i/%i/%i", actual->dia, actual->mes, actual->anio);
 				encontrado=1;
 			}
 			else
@@ -668,12 +669,12 @@ int modificar_Ayudante()
 		{
 			printf("Ingrese el numero de identificacion del ayudante de santa (formato X-XXXX-XXXX): ");
 			fflush(stdin);
-			scanf("%[^\n]", &actual->cedula);
-			while (strlen(actual->cedula)!=11) 
+			scanf("%[^\n]", &actual->identificacion);
+			while (strlen(actual->identificacion)!=11) 
 			{
 				printf("Error, ingrese nuevamente el numero de identificacion del ayudante, con el formato solicitado (X-XXXX-XXXX): ");
 				fflush(stdin);
-				scanf("%[^\n]", &actual->cedula);
+				scanf("%[^\n]", &actual->identificacion);
 			}
 		}
 		else if (dato==3)
@@ -685,7 +686,7 @@ int modificar_Ayudante()
 		{
 			printf("Describa las funciones que desempeña: ");
 			fflush(stdin);
-			scanf("%[^\n]", &actual->funcs);
+			scanf("%[^\n]", &actual->funciones);
 		}
 		
 		else if (dato==5)
@@ -778,7 +779,7 @@ int modificar_Ayudante()
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //Eliminar un ayudante
-/*Entradas: Todos los datos que presenta el struct de ayudantes.
+/*Entradas: Todos los datos que presenta el struct de Ayudantes.
   Salidas: El ayudante quedará eliminado del programa.
   Restricciones:  Automaticamente no quedará ningún dato del ayudante en el programa.*/
 void eliminarAyudante(char *id_ayudante)
@@ -794,7 +795,7 @@ void eliminarAyudante(char *id_ayudante)
 		while(actual!=NULL && encontrado!=1)
 		{
 			
-			if(strcmp(actual->cedula,id_ayudante)==0)
+			if(strcmp(actual->identificacion,id_ayudante)==0)
 			{
 	
 				if(actual==primer_Ayudante)
@@ -834,14 +835,14 @@ void eliminarAyudante(char *id_ayudante)
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-//Menu principal de la estructura de los ayudantes
+//Menu principal de la estructura de los Ayudantes
 /*Entradas: No posee entradas.
 Salidas: Las diferentes funciones que presenta la estructura.
 Restricciones: Solo se pueden realizar las funciones que presente el menu */
-int Ayudantes()
+int Funcion_Ayudantes()
 {
 	int opc, verificar, dia, mes, anio, diaActual, mesActual, anioActual;
-	char  nombre[30], puesto[30], cedula[30], temp_cedula[30], funcs[100], id_ayudante[12], diaSTR[3], mesSTR[3], anioSTR[5]; 
+	char  nombre[30], puesto[30], identificacion[30], temp_identificacion[30], funciones[100], id_ayudante[12], diaSTR[3], mesSTR[3], anioSTR[5]; 
 	
 	time_t tiempo = time(0);
 	struct tm *tlocal = localtime(&tiempo);
@@ -858,7 +859,7 @@ int Ayudantes()
 	{
 	    printf("\n        ---AYUDANTES DE SANTA---        ");
 		printf("\n       1) Agregar ayudante              ");
-		printf("\n       2) Mostrar ayudantes             ");
+		printf("\n       2) Mostrar Ayudantes             ");
 	    printf("\n       3) Modificar datos de ayudante   ");
 		printf("\n       4) Eliminar ayudante             ");
 	    printf("\n       5) Volver al menu principal      ");
@@ -884,17 +885,17 @@ int Ayudantes()
 				
 				printf("Ingrese el numero de identificacion con formato X-XXXX-XXXX: ");
 				fflush(stdin);
-				scanf("%[^\n]", &temp_cedula);
-				while (strlen(temp_cedula)!=11) 
+				scanf("%[^\n]", &temp_identificacion);
+				while (strlen(temp_identificacion)!=11) 
 				{
 					printf("Error, ingrese nuevamente el numero de identificacion, siguiendo el formato solicitado (X-XXXX-XXXX): ");
 					fflush(stdin);
-					scanf("%[^\n]", &temp_cedula);
+					scanf("%[^\n]", &temp_identificacion);
 				}
 				
 				while(actual!=NULL)
 				{
-					if (strcmp(actual->cedula , temp_cedula)==0)
+					if (strcmp(actual->identificacion , temp_identificacion)==0)
 					{ 
 						verificar++;
 					}
@@ -907,7 +908,7 @@ int Ayudantes()
 				
 				printf("Funciones que desempenia: ");
 				fflush(stdin);
-				scanf("%[^\n]", &funcs);
+				scanf("%[^\n]", &funciones);
 				
 				printf("Ingrese el numero que corresponde a lo que se le solicita a continuacion\n");
 				printf("Ingrese el anio en el que inicio labores con Santa: "); 
@@ -976,8 +977,8 @@ int Ayudantes()
 				                
 				if(verificar==0)
 				{
-					strcpy(cedula, temp_cedula);
-					nuevoAyudante(cedula, nombre, puesto, funcs, dia, mes, anio);
+					strcpy(identificacion, temp_identificacion);
+					nuevoAyudante(identificacion, nombre, puesto, funciones, dia, mes, anio);
 					printf("\nEl ayudante de santa se ha registrado de manera exitosa.\n");
 				}
 				else 
@@ -1010,7 +1011,7 @@ int Ayudantes()
 	}
 }
 
-//------------------------------------STRUCT JUGUETES--------------------------------------------------------------------------------------------------------
+//------------------------------------STRUCT Funcion_Juguetes--------------------------------------------------------------------------------------------------------
 /*Entradas: El nombre, la descripcion y la categoria del juguete.
 Salidas: Presenta un nuevo nodo en una lista simple.
 Restricciones: Solo presenta un puntero a siguiente */
@@ -1020,14 +1021,14 @@ struct juguete
     char nombre[30], desc[100], categoria[30];
 	struct juguete *hijo_der;
     struct juguete *hijo_izq;
-}*root=NULL;
+}*raiz=NULL;
 typedef struct juguete jug;
 
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
-/*Entradas: Las variables para la creacion de un registro con los juguetes.
+/*Entradas: Las variables para la creacion de un registro con los Funcion_Juguetes.
 Salidas: Un nuevo nodo con los datos del nuevo juguete
-Restricciones: Esta funcionalidad solo es para los juguetes  */
+Restricciones: Esta funcionalidad solo es para los Funcion_Juguetes  */
 struct juguete* nuevoJuguete(int cod, char *nombre, char *desc, char *categoria, int max, int min, int costo)
 {
     struct juguete *nuevo;
@@ -1047,75 +1048,75 @@ struct juguete* nuevoJuguete(int cod, char *nombre, char *desc, char *categoria,
     return nuevo;
 }
 
-struct juguete* insertarJuguete(struct juguete *root, int cod, char *nombre, char *desc, char *categoria, int max, int min, int costo)
+struct juguete* insertarJuguete(struct juguete *raiz, int cod, char *nombre, char *desc, char *categoria, int max, int min, int costo)
 {
 
-    if(root==NULL)
+    if(raiz==NULL)
     {
     	return nuevoJuguete(cod, nombre, desc, categoria, max, min, costo);
 	}   
-    else if(cod>root->codigo) 
+    else if(cod>raiz->codigo) 
     {
-    	root->hijo_der=insertarJuguete(root->hijo_der, cod, nombre, desc, categoria, max, min, costo);
+    	raiz->hijo_der=insertarJuguete(raiz->hijo_der, cod, nombre, desc, categoria, max, min, costo);
 	}   
     else 
     {
-    	root->hijo_izq = insertarJuguete(root->hijo_izq,cod, nombre, desc, categoria, max, min, costo);
+    	raiz->hijo_izq = insertarJuguete(raiz->hijo_izq,cod, nombre, desc, categoria, max, min, costo);
 	}
-    return root;
+    return raiz;
 }
 
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-//Mostrar todos los juguetes.
-/*Entradas: Todos los datos que presenta el struct de juguetes
-Salidas: Muestra en pantalla todos los datos de los juguetes que se encuentren registrados. 
-Restricciones: Solo se mostraran los juguetes que esten inscritos previamente. */
-void mostrarJuguetes(struct juguete *root)
+//Mostrar todos los Funcion_Juguetes.
+/*Entradas: Todos los datos que presenta el struct de Funcion_Juguetes
+Salidas: Muestra en pantalla todos los datos de los Funcion_Juguetes que se encuentren registrados. 
+Restricciones: Solo se mostraran los Funcion_Juguetes que esten inscritos previamente. */
+void mostrarJuguetes(struct juguete *raiz)
 {
-    if(root!=NULL) 
+    if(raiz!=NULL) 
     {
-        mostrarJuguetes(root->hijo_izq); 
+        mostrarJuguetes(raiz->hijo_izq); 
         
-        printf("\n Juguete-0%d\n", root->codigo);
-        printf("\n Nombre: %s\n", root->nombre);
-        printf("\n Categoria: %s\n", root->categoria);
-        printf("\n Descripcion: %s\n", root->desc);
-        printf("\n Rango de edad recomendado: %d-%d\n\n", root->min, root->max);
+        printf("\n Juguete-0%d\n", raiz->codigo);
+        printf("\n Nombre: %s\n", raiz->nombre);
+        printf("\n Categoria: %s\n", raiz->categoria);
+        printf("\n Descripcion: %s\n", raiz->desc);
+        printf("\n Rango de edad recomendado: %d-%d\n\n", raiz->min, raiz->max);
         
-        mostrarJuguetes(root->hijo_der);// visiting hijo_der child
+        mostrarJuguetes(raiz->hijo_der);// visiting hijo_der child
     }
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-//Modificar los datos de los juguetes.
-/*Entradas: Todos los datos que presenta el struct de juguetes.
+//Modificar los datos de los Funcion_Juguetes.
+/*Entradas: Todos los datos que presenta el struct de Funcion_Juguetes.
 Salidas: Se modifican los datos que el usuario necesite. 
-Restricciones: Solo se mostraran los juguetes que esten inscritos previamente.*/
-void modificarJug(jug *root, char *juguete) 
+Restricciones: Solo se mostraran los Funcion_Juguetes que esten inscritos previamente.*/
+void modificarJug(jug *raiz, char *juguete) 
 {
 	int dato;
 	char elecc[3]="Si";
 	
-    if (root!=NULL) 
+    if (raiz!=NULL) 
 	{ 
 
-        if (root->hijo_izq) 
+        if (raiz->hijo_izq) 
         {
-        	modificarJug(root->hijo_izq, juguete);
+        	modificarJug(raiz->hijo_izq, juguete);
 		}
 
-        if (strcmp(root->nombre, juguete)==0) 
+        if (strcmp(raiz->nombre, juguete)==0) 
 		{
-            printf("\n                    ---JUGUETES----          \n"                 );
-            printf("\n     Juguete-0%d\n", root->codigo                                );
-	        printf("\n  1) Nombre: %s\n", root->nombre                                 );
-	        printf("\n  2) Categoria: %s\n", root->categoria                           );
-	        printf("\n  3) Descripcion: %s\n", root->desc                              );
-	        printf("\n  4) Rango de edad recomendado: %d-%d\n", root->min, root->max   );
-	        printf("\n  5) Costo total del juguete: $%d\n\n", root->costo              );
+            printf("\n                    ---Juguetes----          \n"                 );
+            printf("\n     Juguete-0%d\n", raiz->codigo                                );
+	        printf("\n  1) Nombre: %s\n", raiz->nombre                                 );
+	        printf("\n  2) Categoria: %s\n", raiz->categoria                           );
+	        printf("\n  3) Descripcion: %s\n", raiz->desc                              );
+	        printf("\n  4) Rango de edad recomendado: %d-%d\n", raiz->min, raiz->max   );
+	        printf("\n  5) Costo total del juguete: $%d\n\n", raiz->costo              );
 	        
 	        while (strcmp(elecc,"si")==0 || strcmp(elecc,"Si")==0)
 	        {
@@ -1132,119 +1133,119 @@ void modificarJug(jug *root, char *juguete)
 				{
 					printf("Ingrese el nuevo nombre del juguete: ");
 					fflush(stdin);
-					scanf("%[^\n]", &root->nombre);
+					scanf("%[^\n]", &raiz->nombre);
 				}
 				else if (dato==2)
 				{
 					printf("Ingrese la nueva categoria del juguete: ");
 					fflush(stdin);
-					scanf("%[^\n]", &root->categoria);
+					scanf("%[^\n]", &raiz->categoria);
 				}
 				else if (dato==3)
 				{
 					printf("Ingrese la descripcion del juguete: ");
 					fflush(stdin);
-					scanf("%[^\n]", &root->desc);
+					scanf("%[^\n]", &raiz->desc);
 				}
 				else if (dato==4)
 				{
 					printf("La edad maxima recomendada para utilizar el juguete: ");
-					scanf("%i", &root->max);
+					scanf("%i", &raiz->max);
 					
 					printf("La edad minima recomendada para utilizar el juguete: "); 
-					scanf("%i", &root->min);
-					while (root->min>root->max)
+					scanf("%i", &raiz->min);
+					while (raiz->min>raiz->max)
 					{
 						printf("Error, ingrese nuevamente la edad minima para utilizar el juguete: ");
-						scanf("%i", &root->min);
+						scanf("%i", &raiz->min);
 					}
 				}
 				else if (dato==5)
 				{
 					printf("El costo total de fabricacion es: $");
-					scanf("%d",&root->costo);
+					scanf("%d",&raiz->costo);
 				}
 				printf("Si desea modificar otro dato, digite 'Si', digite 'No' en caso contrario: ");
 				scanf("%s",&elecc);
 			}
         }
 
-        if (root->hijo_der) 
+        if (raiz->hijo_der) 
         {
-        	modificarJug(root->hijo_der, juguete);
+        	modificarJug(raiz->hijo_der, juguete);
 		}
     } 
 	else
 	{
-		printf("No hay juguetes registrados");
+		printf("No hay Funcion_Juguetes registrados");
 	}
 }
 
-struct juguete* find_minimum(struct juguete *root)
+struct juguete* find_minimum(struct juguete *raiz)
 {
-    if(root == NULL)
+    if(raiz == NULL)
     {
     	return NULL;
 	}
-    else if(root->hijo_izq != NULL)
+    else if(raiz->hijo_izq != NULL)
     {
-    	return find_minimum(root->hijo_izq); 
+    	return find_minimum(raiz->hijo_izq); 
 	}
-    return root;
+    return raiz;
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 //Eliminar un juguete
-/*Entradas: Todos los datos que presenta el struct de juguetes
+/*Entradas: Todos los datos que presenta el struct de Funcion_Juguetes
   Salidas: El juguete quedará eliminado del programa.
   Restricciones:  Automaticamente no quedará ningún dato del juguete en el programa.*/
-struct juguete* eliminarJug(struct juguete *root, int cod)
+struct juguete* eliminarJug(struct juguete *raiz, int cod)
 {
     int encontrado=0;
 
-    if(root!=NULL)
+    if(raiz!=NULL)
     {
 
-        if(root==NULL)
+        if(raiz==NULL)
             return NULL;
-        if (cod>root->codigo)
-            root->hijo_der = eliminarJug(root->hijo_der, cod);
-        else if(cod<root->codigo)
-            root->hijo_izq = eliminarJug(root->hijo_izq, cod);
+        if (cod>raiz->codigo)
+            raiz->hijo_der = eliminarJug(raiz->hijo_der, cod);
+        else if(cod<raiz->codigo)
+            raiz->hijo_izq = eliminarJug(raiz->hijo_izq, cod);
         else
         {
          
-            if(root->hijo_izq==NULL && root->hijo_der==NULL)
+            if(raiz->hijo_izq==NULL && raiz->hijo_der==NULL)
             {
-                root=NULL;
+                raiz=NULL;
             }
 
        
-            else if(root->hijo_izq==NULL || root->hijo_der==NULL)
+            else if(raiz->hijo_izq==NULL || raiz->hijo_der==NULL)
             {
                 struct juguete *temp;
-                if(root->hijo_izq==NULL)
+                if(raiz->hijo_izq==NULL)
                 {
-                    temp = root->hijo_der;
+                    temp = raiz->hijo_der;
                 }
                 else
                 {
-                    temp = root->hijo_izq;
+                    temp = raiz->hijo_izq;
                 }
-                root=NULL;
+                raiz=NULL;
             }
 
             
             else
             {
-                struct juguete *temp = find_minimum(root->hijo_der);
-                root->codigo = temp->codigo;
-                root->hijo_der = eliminarJug(root->hijo_der, temp->codigo);
+                struct juguete *temp = find_minimum(raiz->hijo_der);
+                raiz->codigo = temp->codigo;
+                raiz->hijo_der = eliminarJug(raiz->hijo_der, temp->codigo);
             }
             printf("\nEl juguete fue eliminado de manera exitosa");
             encontrado=1;
         }
-        return root;
+        return raiz;
         }
     else
     {
@@ -1255,43 +1256,43 @@ struct juguete* eliminarJug(struct juguete *root, int cod)
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //Buscar un juguete.
-/*Entradas: Todos los datos que presenta el struct de juguetes
+/*Entradas: Todos los datos que presenta el struct de Funcion_Juguetes
   Salidas: Se mostrara el juguete que el usuario ha realizado la busqueda.
-  Restricciones:  Solo se mostraran los juguetes que previamente esten ingresadas al programa.*/
-int obtener_cod(jug *root, char *juguete) 
+  Restricciones:  Solo se mostraran los Funcion_Juguetes que previamente esten ingresadas al programa.*/
+int obtener_cod(jug *raiz, char *juguete) 
 {
 	int dato;
 	
-    if (root!=NULL) 
+    if (raiz!=NULL) 
 	{ 
 
-        if (root->hijo_izq) 
+        if (raiz->hijo_izq) 
         {
-        	obtener_cod(root->hijo_izq, juguete);
+        	obtener_cod(raiz->hijo_izq, juguete);
 		}
 
-        if (strstr(root->nombre, juguete)) 
+        if (strstr(raiz->nombre, juguete)) 
 		{
-            return (root->codigo);
+            return (raiz->codigo);
         }
 
-        if (root->hijo_der) 
+        if (raiz->hijo_der) 
         {
-        	obtener_cod(root->hijo_der, juguete);
+        	obtener_cod(raiz->hijo_der, juguete);
 		}
     } 
 	else
 	{
-		printf("No hay juguetes registrados");
+		printf("No hay Funcion_Juguetes registrados");
 	}
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-//Menu principal de la estructura de los juguetes
-/*Entradas: Los datos del struct de juguetes.
+//Menu principal de la estructura de los Funcion_Juguetes
+/*Entradas: Los datos del struct de Funcion_Juguetes.
 Salidas: Las diferentes funciones que presenta la estructura.
 Restricciones: Solo se pueden realizar las funciones que presente el menu */
-void Juguetes(jug *root)
+void Funcion_Juguetes(jug *raiz)
 {
 
 	int opc=-1, min=-1, max=-1, costo=-1, cod=-1;
@@ -1299,9 +1300,9 @@ void Juguetes(jug *root)
 	
 	while(opc!=5)
 	{
-	    printf("\n            ---JUGUETES---            ");
+	    printf("\n            ---Funcion_Juguetes---            ");
 		printf("\n       1) Agregar juguete             ");
-		printf("\n       2) Mostrar juguetes            ");
+		printf("\n       2) Mostrar Juguetes            ");
 	    printf("\n       3) Modificar datos de juguete  ");
 		printf("\n       4) Eliminar juguete            ");
 	    printf("\n       5) Volver al menu principal    ");
@@ -1382,26 +1383,26 @@ void Juguetes(jug *root)
 	                scanf("%i", &costo);
 	            }
 				 
-				insertarJuguete(root, cod, nombre, desc, categoria, max, min, costo);
+				insertarJuguete(raiz, cod, nombre, desc, categoria, max, min, costo);
 				printf("\nEl juguete se registro de manera exitosa\n");
 			}
 			else if(opc==2)
 			{
-				mostrarJuguetes(root);
+				mostrarJuguetes(raiz);
 			}
 			else if(opc==3)
 			{
 				printf("Ingrese el nombre del juguete del cual desea modificar sus datos: ");
 				fflush(stdin);
 				scanf("%[^\n]", &nombre);
-				modificarJug(root, nombre);
+				modificarJug(raiz, nombre);
 			}
 			else if(opc==4)
 			{
 				printf("Ingrese el nombre del juguete: ");
 				fflush(stdin);
 				scanf("%[^\n]", &nombre);
-				eliminarJug(root, obtener_cod(root, nombre));
+				eliminarJug(raiz, obtener_cod(raiz, nombre));
 			}
 		}
 	}
@@ -1579,8 +1580,8 @@ void insertarPoloNorte (char nombre [35],int codigo,int postal)
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-//Crear conexion de rutas con domicilios.
-/*Entradas: Todos los datos del sruct de domicilios
+//Crear conexion de rutas con Funcion_Domicilios.
+/*Entradas: Todos los datos del sruct de Funcion_Domicilios
   Salidas: Se agrega la ruta al programa.
   Restricciones: No posee restricciones.*/	
 
@@ -2366,16 +2367,16 @@ void mostrarGrafo()
 /*Entradas: No posee entradas.
 Salidas: Las diferentes funciones que presenta la estructura.
 Restricciones: Solo se pueden realizar las funciones que presente el menu */
-int Domicilios()
+int Funcion_Domicilios()
 {
 	
-	int opc, domicilios, d;;
+	int opc, Funcion_Domicilios, d;;
 	insertarPoloNorte ("Polo Norte", 000, 28850);
 
 	while (opc!=5)
 	{
-		printf("\n         ---DOMICILIOS---       ");
-		printf("\n  1) Agregar domicilios         ");
+		printf("\n         ---Funcion_Domicilios---       ");
+		printf("\n  1) Agregar Domicilios         ");
 		printf("\n  2) Gestionar domicilio        ");
 	    printf("\n  3) Agregar ruta               ");
 	    printf("\n  4) Gestionar ruta             ");
@@ -2391,10 +2392,10 @@ int Domicilios()
 	    
 			if (opc==1)
 			{
-				printf("Ingrese la cantidad de domicilios a registar: ");
-				scanf("%d",&domicilios);
+				printf("Ingrese la cantidad de Domicilios a registar: ");
+				scanf("%d",&Funcion_Domicilios);
 				
-				for(d=0; d<domicilios; d++)
+				for(d=0; d<Funcion_Domicilios; d++)
 				{
 					printf("\n\n Ubicacion #%d\n", d+1 );
 					insertarUbicacion ();								
@@ -2492,15 +2493,15 @@ typedef struct comportamientos
 	struct comportamientos* sig_compor;
 } comportamientos;
 
-//Variables generales de primer y ultimo comportamiento
+//Variables generales de primer y ultimo Funcion_Comportamiento
 comportamientos* primer_compor=NULL;
 comportamientos* ultimo_compor=NULL;
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-//Insertar comportamiento.
+//Insertar Funcion_Comportamiento.
 /*Entradas: Las variables para la creacion de un registro con los comportamientos 
-Salidas: Un nuevo nodo con los datos del nuevo comportamiento
+Salidas: Un nuevo nodo con los datos del nuevo Funcion_Comportamiento
 Restricciones: Esta funcion solo tiene funcionalidad para comportamientos  */
 int nuevoComportamiento(char *nombrePadre, char  *cedu_nino, char *fecha, char *descripcion, int conducta) //Funcion para insertar
 { 
@@ -2538,32 +2539,32 @@ int nuevoComportamiento(char *nombrePadre, char  *cedu_nino, char *fecha, char *
 /*Entradas: No posee entradas.
 Salidas: Las diferentes funciones que presenta la estructura.
 Restricciones: Solo se pueden realizar las funciones que presente el menu */
-int comportamiento()
+int Funcion_Comportamiento()
 {
-	//system("color 01");
+
 	int opc, verificar, conducta;
-	char  nombrePadre[30], cedu_nino[12], fecha[30], descripcion[100],temp_cedula[30]; 
+	char  nombrePadre[30], cedu_nino[12], fecha[30], descripcion[100],temp_identificacion[30]; 
 
 	nino* actual=(nino*) malloc(sizeof(nino));
 	actual=primer_Nino;
 	
 	printf("Ingrese el nombre del padre o madre del nino: ");
-	fflush(stdin); //limpia buffer de espacios y saltos
+	fflush(stdin); 
 	scanf("%[^\n]",&nombrePadre);
 
 	
-	printf("Ingrese la cedula del nino(a) (formato X-XXXX-XXXX): "); 
+	printf("Ingrese la identificacion del nino(a) (formato X-XXXX-XXXX): "); 
 	fflush(stdin);
-	scanf("%[^\n]", &temp_cedula);
-	while (strlen(temp_cedula)!=11) 
+	scanf("%[^\n]", &temp_identificacion);
+	while (strlen(temp_identificacion)!=11) 
 	{
 		printf("Error, ingrese nuevamente el numero de identificacion del nino(a), con el formato solicitado (X-XXXX-XXXX): ");
 		fflush(stdin);
-		scanf("%[^\n]", &temp_cedula);
+		scanf("%[^\n]", &temp_identificacion);
 	}
 	while(actual!=NULL)
 	{
-		if (strcmp(actual->cedula , temp_cedula)==0)
+		if (strcmp(actual->identificacion , temp_identificacion)==0)
 		{ 
 			verificar++;
 		}
@@ -2575,13 +2576,13 @@ int comportamiento()
 	}
 	else
 	{	
-		printf("Ingrese una descripcion del comportamiento del nino(a): ");
+		printf("Ingrese una descripcion del Comportamiento del nino(a): ");
 		fflush(stdin);
 		scanf("%[^\n]", &descripcion);
 		
 		while (conducta != 1 && conducta != 2)
 		{
-			printf("Ingrese 1 si el comportamiento a registrar es ---Bueno--- o 2 si es ---Malo---: ");
+			printf("Ingrese 1 si el Comportamiento a registrar es ---Bueno--- o 2 si es ---Malo---: ");
 			fflush(stdin);
 			if(scanf("%i", &conducta)!=1)
 			{
@@ -2609,7 +2610,7 @@ int comportamiento()
 			
 			snprintf(fecha_C, sizeof fecha_C, "%s/%s/%s", diaSTR, mesSTR, anioSTR);
 			printf("\nFecha del registro: %s \n",fecha_C);
-			printf("\nEl comportamiento del nino(a) se ha registrado de manera exitosa.\n");
+			printf("\nComportamiento del nino(a) se ha registrado de manera exitosa.\n");
 		}
 	}
 	
@@ -2622,7 +2623,7 @@ Salidas: Un nuevo nodo en lista Simple
 Restricciones: Solo presenta un puntero a siguiente */
 typedef struct cartas
 {
-	char nombreNino[30], cedula[30];
+	char nombreNino[30], identificacion[30];
 	int anio;
 	struct cartas* sig_carta;
 } cartas;
@@ -2637,12 +2638,12 @@ cartas* ultimo_carta=NULL;
 /*Entradas: Las variables para la creacion de un registro con las cartas 
 Salidas: Un nuevo nodo con los datos de la nueva carta
 Restricciones: Esta funcion solo tiene funcionalidad para las cartas  */
-int nuevaCarta(char *cedula, char  *nombreNino, int anio) //Funcion para insertar
+int nuevaCarta(char *identificacion, char  *nombreNino, int anio) //Funcion para insertar
 {
 	cartas *nuevo=(cartas*) malloc(sizeof(cartas));
 	
 	strcpy(nuevo->nombreNino, nombreNino);
-	strcpy(nuevo->cedula, cedula);
+	strcpy(nuevo->identificacion, identificacion);
     nuevo->anio=anio; 
 
 	if(primer_carta==NULL)	
@@ -2659,44 +2660,44 @@ int nuevaCarta(char *cedula, char  *nombreNino, int anio) //Funcion para inserta
 //----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //Buscar juguete
-/*Entradas: Todos los datos que presenta el struct de juguetes
+/*Entradas: Todos los datos que presenta el struct de Funcion_Juguetes
   Salidas: Se mostrara el juguete que el usuario ha realizado la busqueda.
-  Restricciones:  Solo se mostraran los juguetes que previamente esten ingresadas al programa.*/
+  Restricciones:  Solo se mostraran los Funcion_Juguetes que previamente esten ingresadas al programa.*/
 
-void buscarJug(jug *root, char *juguete) 
+void buscarJug(jug *raiz, char *juguete) 
 {
-    if (root!=NULL) 
+    if (raiz!=NULL) 
 	{ 
         
-        if (root->hijo_izq) 
+        if (raiz->hijo_izq) 
         {
-        	buscarJug(root->hijo_izq, juguete);
+        	buscarJug(raiz->hijo_izq, juguete);
 		}
 
-        if (strcmp(root->nombre, juguete)==0) 
+        if (strcmp(raiz->nombre, juguete)==0) 
 		{
-            printf("\n                    ---JUGUETES----          \n"                 );
-            printf("\n     Juguete-0%d\n", root->codigo                                );
-	        printf("\n  1) Nombre: %s\n", root->nombre                                 );
-	        printf("\n  2) Categoria: %s\n", root->categoria                           );
-	        printf("\n  3) Descripcion: %s\n", root->desc                              );
-	        printf("\n  4) Rango de edad recomendado: %d-%d\n", root->min, root->max   );
+            printf("\n                    ---Juguetes----          \n"                 );
+            printf("\n     Juguete-0%d\n", raiz->codigo                                );
+	        printf("\n  1) Nombre: %s\n", raiz->nombre                                 );
+	        printf("\n  2) Categoria: %s\n", raiz->categoria                           );
+	        printf("\n  3) Descripcion: %s\n", raiz->desc                              );
+	        printf("\n  4) Rango de edad recomendado: %d-%d\n", raiz->min, raiz->max   );
         }
 
-       if (root->hijo_der) 
+       if (raiz->hijo_der) 
         {
-        	buscarJug(root->hijo_der, juguete);
+        	buscarJug(raiz->hijo_der, juguete);
 		}
     } 
-	else printf("\nError, el programa no encuentra juguetes registrados.\n");
+	else printf("\nError, el programa no encuentra Juguetes registrados.\n");
 
 }
 
-//--------------------------------------------------------STRUCT JUGUETES PEDIDOS----------------------------------------------------------------------------------
+//--------------------------------------------------------STRUCT Funcion_Juguetes PEDIDOS----------------------------------------------------------------------------------
 
 typedef struct jpedidos
 {
-	char cedula[30], list_juguetes[34], list_deseos[34], estado[20];
+	char identificacion[30], list_juguetes[34], list_deseos[34], estado[20];
 	int anio;
 	struct jpedidos* sig;
 } jpedidos;
@@ -2704,11 +2705,11 @@ typedef struct jpedidos
 jpedidos* primer=NULL;
 jpedidos* ult=NULL;
 
-int nuevoP(char *cedula,  char *list_juguetes,char *list_deseos, char *estado, int anio)
+int nuevoP(char *identificacion,  char *list_juguetes,char *list_deseos, char *estado, int anio)
 {
 	jpedidos *nuevo=(jpedidos*) malloc(sizeof(jpedidos));
 	
-	strcpy(nuevo->cedula, cedula);
+	strcpy(nuevo->identificacion, identificacion);
     strcpy(nuevo->list_juguetes, list_juguetes);
     strcpy(nuevo->list_deseos, list_deseos);
     strcpy(nuevo->estado, estado);
@@ -2728,13 +2729,13 @@ int nuevoP(char *cedula,  char *list_juguetes,char *list_deseos, char *estado, i
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //Crear carta.
-/*Entradas: Todos los datos que presenta el struct de juguetes
+/*Entradas: Todos los datos que presenta el struct de Funcion_Juguetes
   Salidas: Se crea la carta para enviar a santa.
   Restricciones:  Solo se mostraran las cartas que previamente esten ingresadas al programa.*/
-int crear_carta(jug *root)
+int Funcion_Crear_Carta(jug *raiz)
 {
 	int opc, verificar, anio, numJuguetes=0, desicion=0, desicion2=1;
-	char  nombre[30], temp_cedula[30], id_nino[12],juguetes[14];
+	char  nombre[30], temp_identificacion[30], id_nino[12],Funcion_Juguetes[14];
 
 	while(opc!=4)
 	{
@@ -2760,16 +2761,16 @@ int crear_carta(jug *root)
 					
 				printf("Valide el numero de identificacion del nino(a) en el programa con (formato X-XXXX-XXXX): ");
 				fflush(stdin);
-				scanf("%[^\n]", &temp_cedula);
-			 	while (strlen(temp_cedula)!=11)
+				scanf("%[^\n]", &temp_identificacion);
+			 	while (strlen(temp_identificacion)!=11)
 				{
 					printf("\n Error, ingrese nuevamente el numero de identificacion del nino(a), con el formato solicitado (X-XXXX-XXXX): ");
 					fflush(stdin);
-					scanf("%[^\n]", &temp_cedula);	
+					scanf("%[^\n]", &temp_identificacion);	
 				}	
 				while(actual!=NULL)
 				{
-					if (strcmp(actual->cedula , temp_cedula)==0)
+					if (strcmp(actual->identificacion , temp_identificacion)==0)
 					{ 
 						verificar++;
 						strcpy(nombre, actual->nombre); 
@@ -2789,8 +2790,8 @@ int crear_carta(jug *root)
 					{		
 						printf("Ingrese el nombre del juguete que desea: ");
 						fflush(stdin);
-						scanf("%[^\n]", &juguetes);
-						buscarJug(root,juguetes);
+						scanf("%[^\n]", &Funcion_Juguetes);
+						buscarJug(raiz,Funcion_Juguetes);
 					 	
 				    	while (desicion != 1 && desicion != 2 )
 						{
@@ -2808,18 +2809,18 @@ int crear_carta(jug *root)
 						{
 							if(numJuguetes <= 10)
 							{
-								nuevoP(temp_cedula,juguetes," ","Solicitado",anio);
+								nuevoP(temp_identificacion,Funcion_Juguetes," ","Solicitado",anio);
 								numJuguetes = numJuguetes+1;
-								printf(" Cantidad de juguetes en la carta para Santa -%d- de 10.",numJuguetes);					
+								printf(" Cantidad de Juguetes en la carta para Santa -%d- de 10.",numJuguetes);					
 							}
 							else
 							{
-								printf("Error, ya llego al maximo de juguetes agregados a la carta.");
+								printf("Error, ya llego al maximo de Juguetes agregados a la carta.");
 							}
 						}
 						else 
 						{
-							nuevoP(temp_cedula," ",juguetes," Solicitado",anio);
+							nuevoP(temp_identificacion," ",Funcion_Juguetes," Solicitado",anio);
 							printf("\nAgregado a la lista de deseos.");
 						}
 						
@@ -2834,7 +2835,7 @@ int crear_carta(jug *root)
 						}
 						desicion=0;
 					}
-					nuevaCarta(temp_cedula, nombre, anio);
+					nuevaCarta(temp_identificacion, nombre, anio);
 					numJuguetes=0;	
 				}
 			}
@@ -2855,10 +2856,10 @@ int crear_carta(jug *root)
 //Modificar los datos de la carta
 /*Entradas: Todos los datos que presenta el struct de cartas.
 Salidas: Se modifican los datos que el usuario necesite. 
-Restricciones: Solo se mostraran los juguetes que esten inscritos previamente.*/
+Restricciones: Solo se mostraran los Funcion_Juguetes que esten inscritos previamente.*/
 int modificar_carta() 
 {
-	char identificacion[12],juguetes[15];
+	char identificacion[12],Funcion_Juguetes[15];
 	int anio,opc,numJuguetes,desicion,verificar=0;
 	
 	cartas* actual = (cartas*) malloc(sizeof(cartas)); // crea nodos 
@@ -2880,7 +2881,7 @@ int modificar_carta()
 		}	
 		while(actual!=NULL)
 		{
-			if (strcmp(actual->cedula , identificacion)==0)
+			if (strcmp(actual->identificacion , identificacion)==0)
 			{ 
 				verificar++;
 			}
@@ -2894,7 +2895,7 @@ int modificar_carta()
 		actual = primer_carta;
 		while(actual != NULL)
 		{
-			if( strcmp(identificacion, actual->cedula)==0)
+			if( strcmp(identificacion, actual->identificacion)==0)
 			{
 				printf("Ingrese el anio de la carta: ");
 				fflush(stdin);   
@@ -2927,12 +2928,12 @@ int modificar_carta()
 						{
 							printf("\n  ---Informacion de la Carta----"              );
 							printf("\n  Nombre del nino(a): %s", actual->nombreNino  );
-							printf("\n  Cedula: %s", actual->cedula                  );
+							printf("\n  identificacion: %s", actual->identificacion                  );
 							printf("\n  Anio del pedido: %d  ", actual->anio         );
 							printf("\n  Juguetes pedidos en la Carta:               ");
 							while(jugue != NULL)
 							{
-								if(strcmp(identificacion, jugue->cedula)==0)
+								if(strcmp(identificacion, jugue->identificacion)==0)
 								{
 									if(strcmp(jugue->list_juguetes, " ")!=0){
 										printf("\n\t\t ->%s (%s)", jugue->list_juguetes,jugue->estado);
@@ -2941,10 +2942,10 @@ int modificar_carta()
 								jugue = jugue->sig;
 							}
 							jugue = primer;
-							printf("\n\n  Los juguetes en la Lista de deseos:");
+							printf("\n\n  Los Juguetes en la Lista de deseos:");
 							while(jugue != NULL)
 							{
-								if(strcmp(identificacion, jugue->cedula)==0)
+								if(strcmp(identificacion, jugue->identificacion)==0)
 								{
 									if(strcmp(jugue->list_deseos, " ")!=0){
 										printf("\n\t\t ->%s", jugue->list_deseos);
@@ -2962,13 +2963,13 @@ int modificar_carta()
 	}
 	else
 	{
-		printf("\n Error, no hay ninos(as) con cartas registradas\n\n");
+		printf("\n Error, no hay Ninos(as) con cartas registradas\n\n");
 	}
 	while (opc != 4) 
 	{
 		printf("\n                         ---Editar Carta---                            ");
-		printf("\n      1) Agregar juguetes a la carta                                   ");
-		printf("\n      2) Quitar juguetes de la carta                                   ");
+		printf("\n      1) Agregar Juguetes a la carta                                   ");
+		printf("\n      2) Quitar Juguetes de la carta                                   ");
 	    printf("\n      3) Pasar un juguete de la lista de deseos a la carta para Santa  ");
 	    printf("\n      4) Volver al menu principal                                      ");
 	    
@@ -2984,7 +2985,7 @@ int modificar_carta()
 			{
 				printf("\nIngrese el nombre del juguete que desea: ");
 				fflush(stdin);
-				scanf("%[^\n]", &juguetes);
+				scanf("%[^\n]", &Funcion_Juguetes);
 				
 				
 				while (desicion != 1 && desicion != 2)
@@ -2998,19 +2999,19 @@ int modificar_carta()
 				{
 					if(numJuguetes <= 10)
 					{
-						nuevoP(identificacion,juguetes," ","Solicitado",anio);
+						nuevoP(identificacion,Funcion_Juguetes," ","Solicitado",anio);
 						numJuguetes = numJuguetes+1;
-						printf("\n La cantidad de juguetes en la carta para Santa -%d- de 10.",numJuguetes);
+						printf("\n La cantidad de Juguetes en la carta para Santa -%d- de 10.",numJuguetes);
 						printf("\nAgregado a la carta.");			
 					}
 					else
 					{
-						printf("Error, parece que ya tiene mas de 10 juguetes en la carta.");
+						printf("Error, parece que ya tiene mas de 10 Juguetes en la carta.");
 					}
 				}
 				else 
 				{
-					nuevoP(identificacion," ",juguetes,"Solicitado",anio);
+					nuevoP(identificacion," ",Funcion_Juguetes,"Solicitado",anio);
 					printf("\nAgregado a la lista de deseos.");
 				}
 				desicion == 0;
@@ -3019,12 +3020,12 @@ int modificar_carta()
 			{
 				printf("Ingrese el nombre del juguete que desea eliminar: ");
 				fflush(stdin);
-				scanf("%[^\n]", &juguetes);
+				scanf("%[^\n]", &Funcion_Juguetes);
 				
 				jugue = primer;
 				while(jugue != NULL)
 				{
-					if(strcmp(juguetes, jugue->list_juguetes)==0)
+					if(strcmp(Funcion_Juguetes, jugue->list_juguetes)==0)
 					{
 						free(jugue);
 						break;
@@ -3034,7 +3035,7 @@ int modificar_carta()
 				jugue = primer;
 				while(jugue != NULL)
 				{
-					if(strcmp(juguetes, jugue->list_deseos)==0)
+					if(strcmp(Funcion_Juguetes, jugue->list_deseos)==0)
 					{
 						free(jugue);
 						break;
@@ -3047,19 +3048,19 @@ int modificar_carta()
 			{
 				printf("Ingrese el nombre del juguete que desea pasar a la Carta: ");
 				fflush(stdin);
-				scanf("%[^\n]", &juguetes);
+				scanf("%[^\n]", &Funcion_Juguetes);
 				
 				jugue = primer;
 				while(jugue != NULL)
 				{
-					if(strcmp(juguetes, jugue->list_deseos)==0)
+					if(strcmp(Funcion_Juguetes, jugue->list_deseos)==0)
 					{
 						free(jugue);
 						break;
 					}
 					jugue = jugue->sig;
 				}
-				nuevoP(identificacion,juguetes," "," Solicitado",anio);
+				nuevoP(identificacion,Funcion_Juguetes," "," Solicitado",anio);
 				printf("Ingresado a la carta para Santa ");
 			}
 		}
@@ -3071,7 +3072,7 @@ int modificar_carta()
 //Mostrar todos las cartas
 /*Entradas: Todos los datos que presenta el struct de cartas
 Salidas: Muestra en pantalla todos los datos de las cartas que se encuentren registrados. 
-Restricciones: Solo se mostraran los juguetes que esten inscritos previamente. */
+Restricciones: Solo se mostraran los Funcion_Juguetes que esten inscritos previamente. */
 
 int mostrar_carta()
 {
@@ -3092,7 +3093,7 @@ int mostrar_carta()
 		
 		while(actual != NULL)
 		{
-			if( strcmp(identificacion, actual->cedula)==0)
+			if( strcmp(identificacion, actual->identificacion)==0)
 			{	
 				printf("Ingrese el anio de la carta: ");
 				fflush(stdin);   
@@ -3109,13 +3110,13 @@ int mostrar_carta()
 						{
 							printf("\n  ---Informacion de la Carta----"              );
 							printf("\n  Nombre del nino(a): %s", actual->nombreNino  );
-							printf("\n  Cedula: %s", actual->cedula                  );
+							printf("\n  identificacion: %s", actual->identificacion                  );
 							printf("\n  Anio del pedido: %d  ", actual->anio         );
 							printf("\n  Juguetes pedidos en la Carta:               ");
-							printf("\n\n  -Juguetes pedidos en la Carta:");
+							printf("\n\n Juguetes pedidos en la Carta:");
 							while(jugue != NULL)
 							{
-								if(strcmp(identificacion, jugue->cedula)==0)
+								if(strcmp(identificacion, jugue->identificacion)==0)
 								{
 									if(strcmp(jugue->list_juguetes, " ")!=0){
 										printf("\n ->%s (%s)", jugue->list_juguetes,jugue->estado);
@@ -3124,10 +3125,10 @@ int mostrar_carta()
 								jugue = jugue->sig;
 							}
 							jugue = primer;
-							printf("\n\n  Los juguetes en la lista de deseos:");
+							printf("\n\n  Los Juguetes en la lista de deseos:");
 							while(jugue != NULL)
 							{
-								if(strcmp(identificacion, jugue->cedula)==0)
+								if(strcmp(identificacion, jugue->identificacion)==0)
 								{
 									if(strcmp(jugue->list_deseos, " ")!=0){
 										printf("\n\t\t ->%s", jugue->list_deseos);
@@ -3147,7 +3148,7 @@ int mostrar_carta()
 	}
 	else
 	{
-		printf("\nError, no hay ninos(as) con cartas registradas\n\n");
+		printf("\nError, no hay ninos con cartas registradas\n\n");
 	}
 }
 
@@ -3192,7 +3193,7 @@ int nuevaProcesado(char *ID_ayudante, char  *ID_nino, int anio)
 	ultimo_prog=nuevo;
 }
 
-void procesar_cartas()
+void Funcion_Procesar_Cartas()
 {
 	cartas *actual=(cartas*) malloc(sizeof(cartas)); // crea nodos 
 	actual = primer_carta;
@@ -3226,14 +3227,14 @@ void procesar_cartas()
 		}
 	}
 	
-	printf("\n----Ninos(as) que han registrado carta este anio----\n");
+	printf("\n Los niños que han registrado carta este anio----\n");
 	actual = primer_carta;
 	while(actual!=NULL)
 	{
 		if (anio == actual->anio)
 		{
 			printf("\n  Nombre del nino(a): %s", actual->nombreNino);
-			printf("\n  Cedula: %s ", actual->cedula);
+			printf("\n  identificacion: %s ", actual->identificacion);
 			printf("\n  Anio de la carta: %d  ",actual->anio);
 		}
 		actual = actual->sig_carta;
@@ -3245,18 +3246,18 @@ void procesar_cartas()
 	actual = primer_carta;
 	while(actual != NULL)
 	{
-		if( strcmp(identificacion, actual->cedula)==0)
+		if( strcmp(identificacion, actual->identificacion)==0)
 		{
 			printf("\n----Informacion de la Carta----\n");
 			printf("\n  Nombre del nino(a): %s", actual->nombreNino);
-			printf("\n  Cedula: %s ", actual->cedula);
+			printf("\n  identificacion: %s ", actual->identificacion);
 			printf("\n  Anio de la carta: %d  ",actual->anio);
 			printf("\n\n  Juguetes pedidos en la Carta: ");
 			
-			printf("\n\n  Los juguetes pedidos en la carta:");
+			printf("\n\n  Los Juguetes pedidos en la carta:");
 			while(jugue != NULL)
 			{
-				if(strcmp(identificacion, jugue->cedula)==0)
+				if(strcmp(identificacion, jugue->identificacion)==0)
 				{
 					if(strcmp(jugue->list_juguetes, " ")!=0){
 						printf("\n\t\t ->%s (%s)", jugue->list_juguetes,jugue->estado);
@@ -3265,10 +3266,10 @@ void procesar_cartas()
 				jugue = jugue->sig;
 			}
 			jugue = primer;
-			printf("\n\n  Los juguetes en la lista de deseos:");
+			printf("\n\n  Los Juguetes en la lista de deseos:");
 			while(jugue != NULL)
 			{
-				if(strcmp(identificacion, jugue->cedula)==0)
+				if(strcmp(identificacion, jugue->identificacion)==0)
 				{
 					if(strcmp(jugue->list_deseos, " ")!=0){
 						printf("\n\t\t ->%s", jugue->list_deseos);
@@ -3299,7 +3300,7 @@ void procesar_cartas()
 	{
 		while(actual_ayudante!=NULL && encontrado!=1)
 		{
-			if (strcmp(actual_ayudante->cedula, id)==0)
+			if (strcmp(actual_ayudante->identificacion, id)==0)
 			{
 				encontrado=1;
 				actual_ayudante->cartasXAyud++;
@@ -3320,7 +3321,7 @@ void procesar_cartas()
 	jugue= primer;
 	while(jugue != NULL)
 	{
-		if(strcmp(identificacion, jugue->cedula)==0)
+		if(strcmp(identificacion, jugue->identificacion)==0)
 		{
 			if(jugue->anio == anio)
 			{
@@ -3329,11 +3330,11 @@ void procesar_cartas()
 		}
 		jugue = jugue->sig;
 	}
-	printf("\n\n  Los juguetes pedidos en la carta:");
+	printf("\n\n  Los Juguetes pedidos en la carta:");
 	jugue = primer;
 	while(jugue != NULL)
 	{
-		if(strcmp(identificacion, jugue->cedula)==0)
+		if(strcmp(identificacion, jugue->identificacion)==0)
 		{
 			if(strcmp(jugue->list_juguetes, " ")!=0){
 				printf("\n\t\t ->%s (%s)", jugue->list_juguetes,jugue->estado);
@@ -3351,7 +3352,7 @@ void procesar_cartas()
 
 typedef struct estadisticas
 {
-	char cedula[20];
+	char identificacion[20];
 	int anio, solicitudes;
 	struct estadisticas* sig_estadistica;
 } estadisticas;
@@ -3363,14 +3364,14 @@ estadisticas* u = NULL;
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Insertar estadisticas
-/*Entradas: La cedula y los años
+/*Entradas: La identificacion y los años
   Salidas: Se inserta la estadistica
   Restricciones: No presenta restricciones*/
-int nuevaEstadistica(char *cedula, int anio) 
+int nuevaEstadistica(char *identificacion, int anio) 
 {
 	estadisticas *nuevo=(estadisticas*) malloc(sizeof(estadisticas));
 	
-	strcpy(nuevo->cedula, cedula);
+	strcpy(nuevo->identificacion, identificacion);
     nuevo->anio=anio; 
     nuevo->solicitudes=1;
 
@@ -3391,7 +3392,7 @@ int nuevaEstadistica(char *cedula, int anio)
 /*Entradas: No posee entradas.
   Salidas: El analisis de los comportamientos
   Restricciones: No presenta restricciones*/
-void cant_compotamientos()
+void Funcion_Cantidad_Comport()
 {
 	int buenos=0,malos=0;
 	comportamientos *actual=(comportamientos*) malloc(sizeof(comportamientos));
@@ -3420,7 +3421,7 @@ void cant_compotamientos()
 /*Entradas: No posee entradas.
   Salidas: El analisis de las cartas aprobadas y las rechazadas.
   Restricciones: No presenta restricciones*/
-void aprov_rechazados() 
+void Funcion_Cartas_Aprovado_Rechazado() 
 {
 	
 	comportamientos *actual=(comportamientos*) malloc(sizeof(comportamientos));
@@ -3435,7 +3436,7 @@ void aprov_rechazados()
 	{
 		while (actual2!=NULL)
 		{
-			if (strcmp(actual->cedu_nino,actual2->cedula)==0)
+			if (strcmp(actual->cedu_nino,actual2->identificacion)==0)
 			{
 				if (actual->comportamientos_buenos == 1) 
 				{
@@ -3476,11 +3477,11 @@ void aprov_rechazados()
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-// La cantidad de juguetes solicitados por año
+// La cantidad de Juguetes solicitados por año
 /*Entradas: No posee entradas.
-  Salidas: El analisis de los juguetes solicitados por año.
+  Salidas: El analisis de los Juguetes solicitados por año.
   Restricciones: No presenta restricciones*/
-int aniosP() 
+int Funcion_Juguetes_Sol_por_anio() 
 {
 	jpedidos *actual=(jpedidos*) malloc(sizeof(jpedidos));
 	actual= primer;
@@ -3490,7 +3491,7 @@ int aniosP()
 	
 	int repetido=0 , cont=0;
 	
-	printf("\nLos juguetes solicitados por anio\n");
+	printf("\nLos Juguetes solicitados por anio\n");
 	if(primer!= NULL)
 	{
 		while(actual != NULL)
@@ -3531,19 +3532,19 @@ int aniosP()
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Recorrido por inorden.
-/*Entradas: Todos los datos del struct de juguetes.
-  Salidas: El recorrido de los juguetes
+/*Entradas: Todos los datos del struct de Funcion_Juguetes.
+  Salidas: El recorrido de los Funcion_Juguetes
   Restricciones: No presenta restricciones*/
-void mJuguetes(struct juguete *root)//recorrido inorden
+void mJuguetes(struct juguete *raiz)//recorrido inorden
 {
-	printf("\n-Juguetes mas pedidos\n");
+	printf("\n Juguetes mas pedidos\n");
 	
-    if(root!=NULL) 
+    if(raiz!=NULL) 
     {
-        mJuguetes(root->hijo_izq);
-        printf("\tNombre: %s\n", root->nombre);
+        mJuguetes(raiz->hijo_izq);
+        printf("\tNombre: %s\n", raiz->nombre);
         
-        mJuguetes(root->hijo_der);
+        mJuguetes(raiz->hijo_der);
     }
 }
 
@@ -3553,7 +3554,7 @@ void mJuguetes(struct juguete *root)//recorrido inorden
 /*Entradas: No posee entradas.
   Salidas: El analisis de las cartas por ayudante
   Restricciones: No presenta restricciones*/
-void cartas_x_ayudante()
+void Funcion_Cartas_por_Ayudante()
 {
 	ayudante* actual=(ayudante*) malloc(sizeof(ayudante)); 
 	actual=primer_Ayudante;
@@ -3570,7 +3571,7 @@ void cartas_x_ayudante()
 	}
 	else
 	{
-		printf("\n\Error no hay ayudantes registrados\n\n");
+		printf("\n\Error no hay Ayudantes registrados\n\n");
 	}
 }
 
@@ -3582,17 +3583,17 @@ void cartas_x_ayudante()
 int main (void)
 {
 	int opc;
-	struct juguete *root;
-    root=nuevoJuguete(1, "Mazo de cartas", "Juego clasico de cartas", "Juegos de mesa", 99, 7, 3);
+	struct juguete *raiz;
+   raiz=nuevoJuguete(1, "Pelota", "Juego futbol sala", "Deportes", 99, 10, 2);
 	
 	while (opc!=10)
 	{
-		printf("\n                             ---MENU PRINCIPAL---                           ");
-		printf("\n 1)  Registro de ninos(as)             |  6)  Carta a Santa                 ");
-		printf("\n 2)  Registro de ayudantes de Santa    |  7)  Procesar cartas para Santa    ");
-		printf("\n 3)  Registro de juguetes              |  8)  Entregar regalos              ");
-		printf("\n 4)  Lugares de domicilio              |  9)  Analisis de datos             ");
-		printf("\n 5)  Registro comportamiento de ninos  |  10) Finalizar programa            ");
+		printf("\n                                        ---MENU PRINCIPAL---                          ");
+		printf("\n 1)  Registro de Ninos(as)                       |  6)  Carta a Santa                 ");
+		printf("\n 2)  Registro de Ayudantes de Santa              |  7)  Procesar cartas para Santa    ");
+		printf("\n 3)  Registro de Juguetes                        |  8)  Entregar regalos              ");
+		printf("\n 4)  Lugares de domicilio                        |  9)  Analisis de datos             ");
+		printf("\n 5)  Registro de comportamiento de ninos(as)     |  10) Finalizar programa            ");
 	    
 		printf("\n\nIngrese el numero de la funcion a revisar:  ");
 		fflush(stdin);   
@@ -3604,45 +3605,45 @@ int main (void)
 		{  
 		    if (opc==1)
 		    {
-		    	Ninos();    	
+		    	Funcion_Ninos();    	
 			}
 			else if(opc==2)
 			{
-				Ayudantes();
+				Funcion_Ayudantes();
 			}
 			else if(opc==3)
 			{
-				Juguetes(root);
+				Funcion_Juguetes(raiz);
 			}
 			else if(opc==4)
 			{
-				Domicilios();
+				Funcion_Domicilios();
 			}
 			else if(opc==5)
 			{
-				comportamiento();
+				Funcion_Comportamiento();
 			}
 			else if(opc==6)
 			{
-				crear_carta(root);
+				Funcion_Crear_Carta(raiz);
 			}
 			else if(opc==7)
 			{
-				procesar_cartas();
+				Funcion_Procesar_Cartas();
 			}
 			else if(opc==8)
 			{
-				//entrega juguetes
+				//entrega Funcion_Juguetes
 		
 			}
 			else if(opc==9)
 			{
 				printf("\n ---ESTADISTICAS--- \n");
-				aniosP();
-				cant_compotamientos();
-				aprov_rechazados();
-				mJuguetes(root);
-				cartas_x_ayudante();
+				Funcion_Juguetes_Sol_por_anio();
+				Funcion_Cantidad_Comport();
+				Funcion_Cartas_Aprovado_Rechazado();
+				mJuguetes(raiz);
+				Funcion_Cartas_por_Ayudante();
 			}
 			else if(opc>11||opc<1)
 			{
@@ -3653,7 +3654,6 @@ int main (void)
 	return 0;
 	system("PAUSE");
 }
-
 
 
 
